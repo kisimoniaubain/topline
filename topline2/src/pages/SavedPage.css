@@ -1,0 +1,445 @@
+/* =========================================
+   SAVED
+========================================= */
+
+.saved-page {
+  flex: 1;
+  min-width: 0;
+  min-height: calc(100vh - 70px);
+
+  padding: 30px;
+
+  background: var(--background);
+  color: #111827;
+}
+
+.saved-container {
+  width: min(850px, 100%);
+  margin: 0 auto;
+}
+
+/* =========================================
+   HEADER
+========================================= */
+
+.saved-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+}
+
+.saved-title {
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+}
+
+.saved-title-icon {
+  width: 48px;
+  height: 48px;
+
+  border-radius: 12px;
+
+  background: var(--primary);
+  color: #111827;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.saved-title h1 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 28px;
+}
+
+.saved-title p {
+  margin: 5px 0 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+}
+
+.saved-count {
+  padding: 7px 12px;
+
+  border-radius: 20px;
+
+  background: var(--surface);
+
+  border: 1px solid var(--border-color);
+
+  color: #374151;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* =========================================
+   EMPTY
+========================================= */
+
+.saved-empty {
+  padding: 90px 25px;
+
+  text-align: center;
+
+  border: 1px solid var(--border-color);
+
+  border-radius: 14px;
+
+  background: var(--surface);
+}
+
+.saved-empty-icon {
+  width: 78px;
+  height: 78px;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  background: #fff8dc;
+
+  color: var(--primary);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.saved-empty h2 {
+  margin: 0;
+
+  color: #111827;
+
+  font-size: 21px;
+}
+
+.saved-empty p {
+  max-width: 450px;
+
+  margin: 8px auto 0;
+
+  color: #6b7280;
+
+  font-size: 14px;
+
+  line-height: 1.6;
+}
+
+/* =========================================
+   LIST
+========================================= */
+
+.saved-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 16px;
+}
+
+/* =========================================
+   CARD
+========================================= */
+
+.saved-card {
+  overflow: hidden;
+
+  border: 1px solid var(--border-color);
+
+  border-radius: 14px;
+
+  background: var(--surface);
+
+  color: #111827;
+}
+
+/* =========================================
+   CARD HEADER
+========================================= */
+
+.saved-card-header {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 16px 17px 10px;
+}
+
+.saved-user {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.saved-avatar {
+  width: 43px;
+  height: 43px;
+
+  border-radius: 50%;
+
+  background: var(--primary);
+
+  color: #111827;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.saved-user strong {
+  display: block;
+
+  color: #111827;
+
+  font-size: 14px;
+}
+
+.saved-user span {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #6b7280;
+
+  font-size: 12px;
+}
+
+.saved-more {
+  width: 36px;
+  height: 36px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #6b7280;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+.saved-more:hover {
+  background: #f3f4f6;
+
+  color: #111827;
+}
+
+/* =========================================
+   TYPE
+========================================= */
+
+.saved-type {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  margin: 2px 17px 8px;
+
+  color: var(--primary);
+
+  font-size: 12px;
+
+  font-weight: 700;
+}
+
+/* =========================================
+   TEXT
+========================================= */
+
+.saved-text {
+  margin: 0 17px 14px;
+
+  color: #111827;
+
+  font-size: 14px;
+
+  line-height: 1.55;
+}
+
+/* =========================================
+   MEDIA
+========================================= */
+
+.saved-media {
+  width: 100%;
+
+  background: #111;
+}
+
+.saved-media img,
+.saved-media video {
+  display: block;
+
+  width: 100%;
+
+  max-height: 500px;
+
+  object-fit: cover;
+}
+
+/* =========================================
+   STATS
+========================================= */
+
+.saved-stats {
+  display: flex;
+
+  justify-content: space-between;
+
+  padding: 11px 17px;
+
+  border-bottom: 1px solid var(--border-color);
+
+  color: #6b7280;
+
+  font-size: 12px;
+}
+
+/* =========================================
+   ACTIONS
+========================================= */
+
+.saved-actions {
+  display: grid;
+
+  grid-template-columns: repeat(4, 1fr);
+
+  gap: 3px;
+
+  padding: 4px;
+}
+
+.saved-actions button {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 6px;
+
+  padding: 10px 5px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  background: transparent;
+
+  color: #374151;
+
+  font-size: 13px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.saved-actions button:hover {
+  background: #f3f4f6;
+
+  color: #111827;
+}
+
+.saved-actions .remove-saved {
+  color: #dc2626;
+}
+
+.saved-actions .remove-saved:hover {
+  background: #fef2f2;
+
+  color: #dc2626;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 750px) {
+  .saved-page {
+    padding: 18px 12px;
+
+    padding-bottom: 85px;
+  }
+
+  .saved-header {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .saved-title h1 {
+    font-size: 24px;
+  }
+
+  .saved-title p {
+    font-size: 13px;
+  }
+
+  .saved-count {
+    align-self: flex-start;
+  }
+
+  .saved-empty {
+    padding: 70px 18px;
+  }
+
+  .saved-card-header {
+    padding: 13px;
+  }
+
+  .saved-text {
+    margin-left: 13px;
+    margin-right: 13px;
+  }
+
+  .saved-type {
+    margin-left: 13px;
+  }
+
+  .saved-stats {
+    padding: 10px 13px;
+  }
+
+  .saved-actions {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .saved-actions button {
+    font-size: 11px;
+  }
+
+  .saved-actions button svg {
+    width: 17px;
+  }
+}
