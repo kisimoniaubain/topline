@@ -44,7 +44,7 @@ function RegisterPage() {
       setLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/auth/register",
+        "/api/auth/register",
         {
           method: "POST",
           headers: {
@@ -70,23 +70,27 @@ function RegisterPage() {
       }
 
       /*
-       * Save only the authentication information returned
+       * Save authentication information returned
        * by the backend.
        *
-       * The actual account is permanently stored in MongoDB.
+       * The actual account is stored in MongoDB.
        */
-      localStorage.setItem("topline_token", data.token);
+      localStorage.setItem(
+        "topline_token",
+        data.token
+      );
+
       localStorage.setItem(
         "topline_user",
         JSON.stringify(data.user)
       );
 
-      navigate("/home");
+      navigate("/home", { replace: true });
     } catch (error) {
       console.error("Registration error:", error);
 
       setError(
-        "Unable to connect to Topline. Make sure the server is running."
+        "Unable to connect to Topline. Please try again."
       );
     } finally {
       setLoading(false);
@@ -204,7 +208,9 @@ function RegisterPage() {
             className="primary-button full"
             disabled={loading}
           >
-            {loading ? "Creating account..." : "Create account"}
+            {loading
+              ? "Creating account..."
+              : "Create account"}
 
             {!loading && <ArrowRight size={18} />}
           </button>

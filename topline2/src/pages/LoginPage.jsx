@@ -28,19 +28,16 @@ function LoginPage({ onLogin }) {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: form.email,
-            password: form.password,
-          }),
-        }
-      );
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: form.email,
+          password: form.password,
+        }),
+      });
 
       const data = await response.json();
 
@@ -54,25 +51,24 @@ function LoginPage({ onLogin }) {
         return;
       }
 
-      // Save login session
-     localStorage.setItem(
-  "topline_token",
-  data.token
-);
+      localStorage.setItem(
+        "topline_token",
+        data.token
+      );
 
-localStorage.setItem(
-  "topline_user",
-  JSON.stringify(data.user)
-);
+      localStorage.setItem(
+        "topline_user",
+        JSON.stringify(data.user)
+      );
 
-onLogin();
+      onLogin();
 
-navigate("/home", { replace: true });
+      navigate("/home", { replace: true });
     } catch (error) {
       console.error("Login error:", error);
 
       setError(
-        "Unable to connect to Topline. Make sure the server is running."
+        "Unable to connect to Topline. Please try again."
       );
 
       setLoading(false);
