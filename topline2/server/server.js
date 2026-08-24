@@ -1,16 +1,21 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
+
+// Define __filename and __dirname once at the top
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load .env from root folder before importing other modules
+dotenv.config({ path: path.join(__dirname, "..", ".env") });
+
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/auth.js";
 
 const app = express();
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 app.use(cors());
 app.use(express.json());

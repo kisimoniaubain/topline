@@ -1,136 +1,166 @@
-import { useState } from "react";
-import {
-  Camera,
-  Edit3,
-  MapPin,
-  Calendar,
-  MoreHorizontal,
-  Heart,
-  MessageCircle,
-  Share2,
-  Image as ImageIcon,
-  Video,
-  Settings,
-  UserPlus,
-} from "lucide-react";
+import { useState, useEffect } from "react";
+import { Camera, Edit3, Image as ImageIcon, Loader2 } from "lucide-react";
 
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import MobileNav from "../components/MobileNav";
 import "./ProfilePage.css";
 
+// --- CLOUDINARY CONFIGURATION ---
+const CLOUDINARY_CLOUD_NAME = "drqqahmxt";
+const CLOUDINARY_UPLOAD_PRESET = "topline2";
+
+// Get active session user identifier
+const getActiveUserId = () => {
+  try {
+    const activeUser = localStorage.getItem("current_user");
+    if (!activeUser) return "default_user";
+    const parsed = JSON.parse(activeUser);
+    return parsed.username || parsed.id || "default_user";
+  } catch (err) {
+    return "default_user";
+  }
+};
+
+// Safe storage helpers (scoped by user account)
+const getStoredProfile = () => {
+  const userId = getActiveUserId();
+  const storageKey = `topline_user_${userId}`;
+  try {
+    const item = localStorage.getItem(storageKey);
+    if (!item || item === "undefined" || item === "null") {
+      // Fallback: check legacy key
+      const legacyItem = localStorage.getItem("topline_user");
+      return legacyItem ? JSON.parse(legacyItem) : null;
+    }
+    return JSON.parse(item);
+  } catch (err) {
+    console.error("Error reading profile:", err);
+    return null;
+  }
+};
+
+const saveStoredProfile = (profileData) => {
+  const userId = getActiveUserId();
+  const storageKey = `topline_user_${userId}`;
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(profileData));
+    // Keep legacy key synced for backward compatibility
+    localStorage.setItem("topline_user", JSON.stringify(profileData));
+    // Trigger window event so Navbar updates immediately
+    window.dispatchEvent(new Event("storage"));
+  } catch (err) {
+    console.error("Error saving profile:", err);
+  }
+};
+
 function ProfilePage() {
   const [user, setUser] = useState(() => {
-    try {
-      return JSON.parse(
-        localStorage.getItem("topline_user") || "{}"
-      );
-    } catch {
-      return {};
-    }
+    const saved = getStoredProfile();
+    return (
+      saved || {
+        name: "Topline User",
+        username: "username",
+        bio: "Welcome to my profile.",
+        profileImage: "",
+        coverImage: "",
+      }
+    );
   });
 
-  const [activeTab, setActiveTab] = useState("posts");
-
-  const [posts, setPosts] = useState(() => {
-    try {
-      const savedPosts = JSON.parse(
-        localStorage.getItem("topline_posts") || "[]"
-      );
-
-      return savedPosts.filter(
-        (post) =>
-          post.userId === user.id ||
-          post.username === user.username
-      );
-    } catch {
-      return [];
-    }
-  });
-
+  const [posts, setPosts] = useState([]);
   const [editing, setEditing] = useState(false);
 
-  const [editForm, setEditForm] = useState({
-    name: user.name || "",
-    username: user.username || "",
-    bio: user.bio || "",
-    location: user.location || "",
-  });
+  // Upload loading states
+  const [uploadingProfile, setUploadingProfile] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
 
-  const handleEditChange = (event) => {
-    setEditForm({
-      ...editForm,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const saveProfile = (event) => {
-    event.preventDefault();
-
-    const updatedUser = {
-      ...user,
-      name: editForm.name,
-      username: editForm.username,
-      bio: editForm.bio,
-      location: editForm.location,
-    };
-
-    setUser(updatedUser);
-
-    localStorage.setItem(
-      "topline_user",
-      JSON.stringify(updatedUser)
-    );
-
-    try {
-      const users = JSON.parse(
-        localStorage.getItem("topline_users") || "[]"
-      );
-
-      const updatedUsers = users.map((item) =>
-        item.id === user.id
-          ? {
-              ...item,
-              ...updatedUser,
-            }
-          : item
-      );
-
-      localStorage.setItem(
-        "topline_users",
-        JSON.stringify(updatedUsers)
-      );
-    } catch {
-      console.error("Could not update users.");
+  useEffect(() => {
+    // Reload profile if user session changed
+    const currentProfile = getStoredProfile();
+    if (currentProfile) {
+      setUser(currentProfile);
     }
 
-    setEditing(false);
+    const savedPosts = localStorage.getItem("topline_posts");
+    if (savedPosts) {
+      try {
+        setPosts(JSON.parse(savedPosts));
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  }, []);
+
+  // REST API UPLOAD TO CLOUDINARY
+  const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.error?.message || "Failed to upload image to Cloudinary");
+    }
+
+    const data = await res.json();
+    return data.secure_url;
   };
 
-  const removePost = (postId) => {
+  // UPLOAD PROFILE PHOTO
+  const handleProfileImageChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
     try {
-      const allPosts = JSON.parse(
-        localStorage.getItem("topline_posts") || "[]"
-      );
+      setUploadingProfile(true);
+      const imageUrl = await uploadToCloudinary(file);
 
-      const updatedPosts = allPosts.filter(
-        (post) => post.id !== postId
-      );
+      setUser((prevUser) => {
+        const updated = { ...prevUser, profileImage: imageUrl };
+        saveStoredProfile(updated);
+        return updated;
+      });
+    } catch (error) {
+      console.error("Profile image upload failed:", error);
+      alert("Profile upload failed: " + error.message);
+    } finally {
+      setUploadingProfile(false);
+    }
+  };
 
-      localStorage.setItem(
-        "topline_posts",
-        JSON.stringify(updatedPosts)
-      );
+  // UPLOAD COVER PHOTO
+  const handleCoverImageChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-      setPosts((current) =>
-        current.filter((post) => post.id !== postId)
-      );
-    } catch {
-      console.error("Could not delete post.");
+    try {
+      setUploadingCover(true);
+      const imageUrl = await uploadToCloudinary(file);
+
+      setUser((prevUser) => {
+        const updated = { ...prevUser, coverImage: imageUrl };
+        saveStoredProfile(updated);
+        return updated;
+      });
+    } catch (error) {
+      console.error("Cover image upload failed:", error);
+      alert("Cover upload failed: " + error.message);
+    } finally {
+      setUploadingCover(false);
     }
   };
 
   const getInitial = () => {
+    if (!user) return "T";
     return (
       user.name?.charAt(0)?.toUpperCase() ||
       user.username?.charAt(0)?.toUpperCase() ||
@@ -139,404 +169,206 @@ function ProfilePage() {
   };
 
   return (
-    <div className="app-shell">
-      <Navbar />
+    <div className="app-shell" style={{ minHeight: "100vh", background: "#f0f2f5" }}>
+      {Navbar ? <Navbar /> : <header style={{ padding: "10px", background: "#fff" }}>Topline Navbar</header>}
 
       <div className="app-layout">
-        <Sidebar />
+        {Sidebar && <Sidebar />}
 
         <main className="profile-page">
           <div className="profile-container">
-            {/* COVER */}
-            <section className="profile-cover">
-              <div className="profile-cover-gradient" />
+            {/* TOP HEADER SECTION */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "20px",
+                padding: "0 10px",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div
+                  style={{
+                    width: "44px",
+                    height: "44px",
+                    borderRadius: "50%",
+                    background: "#f7a409",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#ffffff",
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    overflow: "hidden",
+                    border: "2px solid #fff",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  {user?.profileImage ? (
+                    <img
+                      src={user.profileImage}
+                      alt="Mini profile"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  ) : (
+                    getInitial()
+                  )}
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <h1 style={{ fontSize: "22px", fontWeight: "800", margin: 0, color: "#0f172a", lineHeight: "1.2" }}>
+                    {user?.name || "Topline User"}
+                  </h1>
+                  <span style={{ fontSize: "14px", color: "#64748b" }}>
+                    @{user?.username || "username"}
+                  </span>
+                </div>
+              </div>
 
               <button
-                className="cover-camera"
-                aria-label="Change cover photo"
+                type="button"
+                onClick={() => setEditing(true)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  background: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  padding: "8px 16px",
+                  borderRadius: "8px",
+                  cursor: "pointer",
+                  fontWeight: "700",
+                  fontSize: "14px",
+                  color: "#0f172a",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                }}
               >
-                <Camera size={18} />
-                <span>Edit cover</span>
+                <Edit3 size={16} />
+                <span>Edit Profile</span>
               </button>
+            </div>
+
+            {/* COVER IMAGE */}
+            <section className="profile-cover" style={{ position: "relative" }}>
+              {user?.coverImage ? (
+                <img src={user.coverImage} alt="Cover" className="profile-cover-image" />
+              ) : (
+                <div className="profile-cover-gradient" />
+              )}
+
+              <input
+                type="file"
+                id="cover-photo-input"
+                accept="image/*"
+                onChange={handleCoverImageChange}
+                disabled={uploadingCover}
+                style={{ display: "none" }}
+              />
+              <label
+                htmlFor="cover-photo-input"
+                className="cover-camera"
+                style={{
+                  position: "absolute",
+                  bottom: "15px",
+                  right: "15px",
+                  background: "rgba(0, 0, 0, 0.65)",
+                  color: "#fff",
+                  padding: "6px 12px",
+                  borderRadius: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  cursor: uploadingCover ? "not-allowed" : "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  zIndex: 2,
+                }}
+              >
+                {uploadingCover ? <Loader2 size={18} className="spin" /> : <Camera size={18} />}
+                <span>{uploadingCover ? "Uploading..." : "Edit cover"}</span>
+              </label>
             </section>
 
-            {/* PROFILE INFORMATION */}
+            {/* MAIN PROFILE CARD */}
             <section className="profile-info-card">
               <div className="profile-main-info">
-                <div className="profile-avatar-wrapper">
+                <div className="profile-avatar-wrapper" style={{ position: "relative" }}>
                   <div className="profile-avatar">
-                    {user.profileImage ? (
-                      <img
-                        src={user.profileImage}
-                        alt={user.name || "Profile"}
-                      />
+                    {user?.profileImage ? (
+                      <img src={user.profileImage} alt="Profile" />
                     ) : (
                       getInitial()
                     )}
                   </div>
 
-                  <button
+                  <input
+                    type="file"
+                    id="profile-photo-input"
+                    accept="image/*"
+                    onChange={handleProfileImageChange}
+                    disabled={uploadingProfile}
+                    style={{ display: "none" }}
+                  />
+                  <label
+                    htmlFor="profile-photo-input"
                     className="profile-avatar-camera"
-                    aria-label="Change profile photo"
+                    style={{
+                      position: "absolute",
+                      bottom: "5px",
+                      right: "5px",
+                      background: "#f7a409",
+                      color: "#ffffff",
+                      padding: "8px",
+                      borderRadius: "50%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: uploadingProfile ? "not-allowed" : "pointer",
+                      border: "2px solid #fff",
+                    }}
+                    aria-label="Change profile image"
                   >
-                    <Camera size={15} />
-                  </button>
+                    {uploadingProfile ? <Loader2 size={15} className="spin" /> : <Camera size={15} />}
+                  </label>
                 </div>
 
                 <div className="profile-details">
-                  <h1>
-                    {user.name || "Topline User"}
-                  </h1>
-
-                  <p className="profile-username">
-                    @{user.username || "username"}
-                  </p>
-
-                  <p className="profile-bio">
-                    {user.bio ||
-                      "Welcome to my Topline profile."}
-                  </p>
-
-                  <div className="profile-meta">
-                    {user.location && (
-                      <span>
-                        <MapPin size={15} />
-                        {user.location}
-                      </span>
-                    )}
-
-                    {user.dateOfBirth && (
-                      <span>
-                        <Calendar size={15} />
-                        Joined Topline
-                      </span>
-                    )}
-                  </div>
+                  <h1>{user?.name || "Topline User"}</h1>
+                  <p className="profile-username">@{user?.username || "username"}</p>
+                  <p className="profile-bio">{user?.bio || "Welcome to my profile."}</p>
                 </div>
 
                 <div className="profile-actions">
                   <button
+                    type="button"
                     className="profile-edit-button"
                     onClick={() => setEditing(true)}
                   >
-                    <Edit3 size={17} />
-                    Edit profile
-                  </button>
-
-                  <button
-                    className="profile-settings-button"
-                    aria-label="Profile settings"
-                  >
-                    <Settings size={18} />
+                    <Edit3 size={17} /> Edit profile
                   </button>
                 </div>
               </div>
 
-              {/* STATS */}
               <div className="profile-stats">
-                <div>
-                  <strong>{posts.length}</strong>
-                  <span>Posts</span>
-                </div>
-
-                <div>
-                  <strong>0</strong>
-                  <span>Friends</span>
-                </div>
-
-                <div>
-                  <strong>0</strong>
-                  <span>Followers</span>
-                </div>
-
-                <div>
-                  <strong>0</strong>
-                  <span>Following</span>
-                </div>
+                <div><strong>{posts.length}</strong><span>Posts</span></div>
+                <div><strong>0</strong><span>Friends</span></div>
+                <div><strong>0</strong><span>Followers</span></div>
               </div>
             </section>
 
-            {/* TABS */}
-            <div className="profile-tabs">
-              <button
-                className={
-                  activeTab === "posts" ? "active" : ""
-                }
-                onClick={() => setActiveTab("posts")}
-              >
-                <ImageIcon size={17} />
-                Posts
-              </button>
-
-              <button
-                className={
-                  activeTab === "videos" ? "active" : ""
-                }
-                onClick={() => setActiveTab("videos")}
-              >
-                <Video size={17} />
-                Videos
-              </button>
-
-              <button
-                className={
-                  activeTab === "about" ? "active" : ""
-                }
-                onClick={() => setActiveTab("about")}
-              >
-                About
-              </button>
-            </div>
-
-            {/* CONTENT */}
             <section className="profile-content">
-              {/* ABOUT */}
-              {activeTab === "about" && (
-                <div className="profile-about-card">
-                  <h2>About</h2>
-
-                  <div className="about-row">
-                    <MapPin size={19} />
-
-                    <div>
-                      <span>Location</span>
-
-                      <strong>
-                        {user.location ||
-                          "Not added yet"}
-                      </strong>
-                    </div>
-                  </div>
-
-                  <div className="about-row">
-                    <Calendar size={19} />
-
-                    <div>
-                      <span>Date of birth</span>
-
-                      <strong>
-                        {user.dateOfBirth ||
-                          "Not added"}
-                      </strong>
-                    </div>
-                  </div>
-
-                  <div className="about-row">
-                    <UserPlus size={19} />
-
-                    <div>
-                      <span>Username</span>
-
-                      <strong>
-                        @{user.username ||
-                          "username"}
-                      </strong>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* VIDEOS */}
-              {activeTab === "videos" && (
-                <div className="profile-empty">
-                  <Video size={35} />
-
-                  <h2>No videos yet</h2>
-
-                  <p>
-                    Videos you post will appear here.
-                  </p>
-                </div>
-              )}
-
-              {/* POSTS */}
-              {activeTab === "posts" && (
-                <>
-                  {posts.length === 0 ? (
-                    <div className="profile-empty">
-                      <ImageIcon size={35} />
-
-                      <h2>No posts yet</h2>
-
-                      <p>
-                        Posts you create will appear
-                        here on your profile.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="profile-posts">
-                      {posts.map((post) => (
-                        <article
-                          className="profile-post-card"
-                          key={post.id}
-                        >
-                          <div className="profile-post-header">
-                            <div className="profile-post-user">
-                              <div className="profile-post-avatar">
-                                {getInitial()}
-                              </div>
-
-                              <div>
-                                <strong>
-                                  {user.name ||
-                                    "Topline User"}
-                                </strong>
-
-                                <span>
-                                  @{user.username ||
-                                    "username"}
-                                </span>
-                              </div>
-                            </div>
-
-                            <button
-                              className="profile-post-more"
-                              onClick={() =>
-                                removePost(post.id)
-                              }
-                              aria-label="Delete post"
-                            >
-                              <MoreHorizontal
-                                size={20}
-                              />
-                            </button>
-                          </div>
-
-                          <p>{post.text}</p>
-
-                          {post.image && (
-                            <img
-                              src={post.image}
-                              alt="Post"
-                            />
-                          )}
-
-                          <div className="profile-post-stats">
-                            <span>
-                              ❤️ {post.likes || 0}
-                            </span>
-
-                            <span>
-                              {post.comments || 0}{" "}
-                              comments
-                            </span>
-
-                            <span>
-                              {post.shares || 0} shares
-                            </span>
-                          </div>
-
-                          <div className="profile-post-actions">
-                            <button>
-                              <Heart size={18} />
-                              Like
-                            </button>
-
-                            <button>
-                              <MessageCircle
-                                size={18}
-                              />
-                              Comment
-                            </button>
-
-                            <button>
-                              <Share2 size={18} />
-                              Share
-                            </button>
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-                  )}
-                </>
-              )}
+              <div className="profile-empty">
+                <ImageIcon size={35} />
+                <h2>Profile Persistent Across Logins</h2>
+                <p>Profile and cover URLs are stored under your account key and will remain intact whenever you log back in!</p>
+              </div>
             </section>
           </div>
         </main>
       </div>
 
-      <MobileNav />
-
-      {/* EDIT PROFILE MODAL */}
-      {editing && (
-        <div className="profile-modal-overlay">
-          <div className="profile-modal">
-            <div className="profile-modal-header">
-              <h2>Edit profile</h2>
-
-              <button
-                onClick={() => setEditing(false)}
-                type="button"
-              >
-                ×
-              </button>
-            </div>
-
-            <form onSubmit={saveProfile}>
-              <label>
-                Name
-
-                <input
-                  type="text"
-                  name="name"
-                  value={editForm.name}
-                  onChange={handleEditChange}
-                  required
-                />
-              </label>
-
-              <label>
-                Username
-
-                <input
-                  type="text"
-                  name="username"
-                  value={editForm.username}
-                  onChange={handleEditChange}
-                  required
-                />
-              </label>
-
-              <label>
-                Bio
-
-                <textarea
-                  name="bio"
-                  value={editForm.bio}
-                  onChange={handleEditChange}
-                  placeholder="Tell people about yourself..."
-                  rows="4"
-                />
-              </label>
-
-              <label>
-                Location
-
-                <input
-                  type="text"
-                  name="location"
-                  value={editForm.location}
-                  onChange={handleEditChange}
-                  placeholder="Your location"
-                />
-              </label>
-
-              <div className="profile-modal-actions">
-                <button
-                  type="button"
-                  onClick={() => setEditing(false)}
-                >
-                  Cancel
-                </button>
-
-                <button type="submit">
-                  Save changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {MobileNav && <MobileNav />}
     </div>
   );
 }

@@ -1,14 +1,48 @@
+import { useState, useEffect } from "react";
 import {
   Bell,
   MessageCircle,
   Search,
   Menu,
 } from "lucide-react";
-
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
 
+// Safe localStorage getter
+const getStoredUser = () => {
+  try {
+    const item = localStorage.getItem("topline_user");
+    if (!item || item === "undefined" || item === "null") return null;
+    return JSON.parse(item);
+  } catch (err) {
+    console.error("Error reading topline_user in Navbar:", err);
+    return null;
+  }
+};
+
 function Navbar({ onMenuClick }) {
+  const [user, setUser] = useState(() => getStoredUser());
+
+  // Listen for real-time updates when user edits profile in other components/tabs
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUser(getStoredUser());
+    };
+
+    // Listen to window storage events
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  const getInitial = () => {
+    if (!user) return "K";
+    return (
+      user.name?.charAt(0)?.toUpperCase() ||
+      user.username?.charAt(0)?.toUpperCase() ||
+      "K"
+    );
+  };
+
   return (
     <header className="top-navbar">
       <div className="navbar-left">
@@ -52,12 +86,33 @@ function Navbar({ onMenuClick }) {
           <MessageCircle size={21} />
         </Link>
 
+        {/* PROFILE AVATAR LINK WITH CLOUDINARY IMAGE DISPLAY */}
         <Link
           to="/profile"
           className="navbar-avatar"
           aria-label="Profile"
+          style={{
+            overflow: "hidden",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            textDecoration: "none",
+          }}
         >
-          K
+          {user?.profileImage ? (
+            <img
+              src={user.profileImage}
+              alt="User profile"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: "50%",
+              }}
+            />
+          ) : (
+            getInitial()
+          )}
         </Link>
       </div>
     </header>

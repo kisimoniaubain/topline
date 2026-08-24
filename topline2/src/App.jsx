@@ -18,29 +18,26 @@ import VideosPage from "./pages/VideosPage";
 import SavedPage from "./pages/SavedPage";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
+import StoryViewerPage from "./pages/StoryViewerPage";
 
 function App() {
+  // Check auth using topline_token instead of topline_user
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(localStorage.getItem("topline_user"))
+    Boolean(localStorage.getItem("topline_token"))
   );
 
   useEffect(() => {
     const handleAuthChange = () => {
-      setIsAuthenticated(
-        Boolean(localStorage.getItem("topline_user"))
-      );
+      // Updates state based on presence of active JWT token
+      setIsAuthenticated(Boolean(localStorage.getItem("topline_token")));
     };
 
-    window.addEventListener(
-      "topline-auth-change",
-      handleAuthChange
-    );
+    window.addEventListener("topline-auth-change", handleAuthChange);
+    window.addEventListener("storage", handleAuthChange);
 
     return () => {
-      window.removeEventListener(
-        "topline-auth-change",
-        handleAuthChange
-      );
+      window.removeEventListener("topline-auth-change", handleAuthChange);
+      window.removeEventListener("storage", handleAuthChange);
     };
   }, []);
 
@@ -61,16 +58,16 @@ function App() {
 
         {/* Login */}
         <Route
-        path="/login"
-        element={
-        isAuthenticated ? (
-            <Navigate to="/home" replace />
-        ) : (
-            <LoginPage
-            onLogin={() => setIsAuthenticated(true)}
-            />
-        )
-        }
+          path="/login"
+          element={
+            isAuthenticated ? (
+              <Navigate to="/home" replace />
+            ) : (
+              <LoginPage
+                onLogin={() => setIsAuthenticated(true)}
+              />
+            )
+          }
         />
 
         {/* Register */}
@@ -95,6 +92,10 @@ function App() {
               <Navigate to="/login" replace />
             )
           }
+        />
+        <Route
+          path="/stories"
+          element={<StoryViewerPage />}
         />
 
         {/* Friends */}

@@ -1,0 +1,445 @@
+<!DOCTYPE html><html class="dark" lang="en" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Challenger - Social Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "error": "#ba1a1a",
+                    "secondary": "#565e74",
+                    "inverse-primary": "#62df7d",
+                    "surface-gray": "#F8FAFC",
+                    "tertiary-fixed-dim": "#ffb2bf",
+                    "surface-variant": "#dde5d9",
+                    "secondary-fixed": "#dae2fd",
+                    "surface-container-low": "#eff6ea",
+                    "outline-variant": "#bdcaba",
+                    "on-secondary-fixed": "#131b2e",
+                    "on-tertiary-fixed": "#3f0016",
+                    "on-surface-variant": "#3e4a3d",
+                    "inverse-surface": "#2b322b",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed": "#002109",
+                    "on-tertiary-fixed-variant": "#8a143c",
+                    "border-subtle": "#E2E8F0",
+                    "background": "#f4fcf0",
+                    "on-error": "#ffffff",
+                    "surface-dim": "#d5dcd1",
+                    "primary-fixed-dim": "#62df7d",
+                    "surface-container": "#e9f0e5",
+                    "primary-container": "#008739",
+                    "error-soft": "#FEF2F2",
+                    "on-primary-container": "#f7fff2",
+                    "tertiary-fixed": "#ffd9de",
+                    "on-tertiary-container": "#fffbff",
+                    "primary-fixed": "#7ffc97",
+                    "on-background": "#171d16",
+                    "error-container": "#ffdad6",
+                    "on-primary": "#ffffff",
+                    "outline": "#6e7a6c",
+                    "tertiary-container": "#c74668",
+                    "surface-container-highest": "#dde5d9",
+                    "surface-tint": "#006e2d",
+                    "error-red": "#EF4444",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#dae2fd",
+                    "on-surface": "#171d16",
+                    "on-primary-fixed-variant": "#005320",
+                    "secondary-fixed-dim": "#bec6e0",
+                    "primary": "#006b2c",
+                    "surface-container-lowest": "#ffffff",
+                    "tertiary": "#a72d51",
+                    "on-secondary-container": "#5c647a",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "surface-bright": "#f4fcf0",
+                    "inverse-on-surface": "#ecf3e7",
+                    "surface-container-high": "#e3eadf",
+                    "surface": "#f4fcf0"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "20px",
+                    "unit": "4px",
+                    "margin-desktop": "40px",
+                    "touch-target": "48px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "label-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"]
+            },
+            "fontSize": {
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #171d16; /* Forcing dark mode vibe from tokens */
+            color: #f4fcf0;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-on-surface text-surface-bright selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TopNavBar (3-Row Layout) -->
+<header class="fixed top-0 left-0 w-full z-50 flex flex-col items-center bg-on-surface border-b border-outline-variant"><!-- Row 1: Brand Logo and Name -->
+<div class="w-full max-w-7xl px-margin-desktop flex items-center py-3 h-14">
+  <div class="flex items-center gap-2 flex-shrink-0">
+    <img alt="Challenger Logo" class="h-8 w-8 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLtjpZAgAngQl7hsjR37NPTQiybGg0z4KXVGRrW5H617CFLGUq2sq_InKPc4RJhdf_rqjP9puAPO50cQyksdAv4kJ29ztgcf3xD0Ok-2j8ScICJlVnDsmH-wHS82GR4lQ3TNByY4dZHHpRs0gWWCtBVl7W2ZO19nxnNpLukInett6iKMBsOdGIS_6vMGpxgW43dURH3G0xI2l_9pFZXsYBGEUdQnTTAUBZn6vtnRY8u3K-dZDskv6pMBrsc">
+    <span class="font-headline-lg text-title-md font-black text-primary dark:text-primary-fixed-dim tracking-tighter">Challenger</span>
+  </div>
+</div>
+
+<!-- Row 2: Search (Left), Nav (Center), Actions (Right) -->
+<div class="w-full border-t border-outline-variant/10 bg-on-surface/50 backdrop-blur-sm">
+  <div class="max-w-7xl mx-auto px-margin-desktop py-2">
+    <div class="flex items-center justify-between w-full gap-4">
+      <!-- Search Bar (Left) -->
+      <div class="relative flex items-center bg-surface-container-highest/20 rounded-full px-4 border border-outline-variant/20 hover:border-primary/50 transition-colors py-1 w-64">
+        <span class="material-symbols-outlined text-outline mr-2 text-[20px]">search</span>
+        <input class="bg-transparent border-none focus:ring-0 text-label-sm font-label-sm text-surface-bright w-full placeholder:text-outline" placeholder="Search..." type="text">
+      </div>
+
+      <!-- Navigation Links (Center) -->
+      <nav class="flex items-center" style="gap: 48px;"><a class="font-label-md text-label-md text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1 transition-colors" href="#">Home</a><a class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors" href="#">Clips</a><a class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors" href="#">Notifications</a><a class="font-label-md text-label-md text-on-surface-variant dark:text-surface-variant hover:text-primary transition-colors" href="#">Messages</a></nav>
+
+      <!-- User Actions (Right) -->
+      <div class="flex items-center gap-4">
+        <button class="material-symbols-outlined text-surface-variant hover:text-primary-fixed-dim transition-colors" data-icon="menu">menu</button>
+        <button class="material-symbols-outlined text-surface-variant hover:text-primary-fixed-dim transition-colors" data-icon="group">group</button>
+        <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-container cursor-pointer hover:scale-105 transition-transform">
+          <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ2ZhX4HKh9Cb2YZKBOaYfsMv40o9QtnyyPf62WECWrudIVSfGRAOiHuFeRCbDxRZy5hzeTKQ3wDSsq013v_kP5pv4RcGDR10ckhYQGZiJ6lBu7w-1QjwM-zwyYWSCVrjKhA6pWIjQ7rVfZ0zhFS6uAddM3q2g4JCSU8LcA7tINPCAA4HJZAW9kCyRgyAi2JIzcuGYYJJ2yP2CII8G6_ntMO4bVb-jt5qMyZnyY4XgcdfphRzWWmqHCw">
+        </div>
+      </div>
+    </div>
+  </div>
+</div></header>
+<!-- SideNavBar (Left) -->
+<aside class="fixed left-0 h-full w-64 p-6 hidden xl:flex flex-col gap-4 border-r border-outline-variant/10 top-32">
+<div class="flex flex-col gap-1 mb-6 bg-surface-container-highest/10 p-4 rounded-xl border border-outline-variant/10">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-container mb-2"><img src="https://lh3.googleusercontent.com/aida/AP1WRLtjpZAgAngQl7hsjR37NPTQiybGg0z4KXVGRrW5H617CFLGUq2sq_InKPc4RJhdf_rqjP9puAPO50cQyksdAv4kJ29ztgcf3xD0Ok-2j8ScICJlVnDsmH-wHS82GR4lQ3TNByY4dZHHpRs0gWWCtBVl7W2ZO19nxnNpLukInett6iKMBsOdGIS_6vMGpxgW43dURH3G0xI2l_9pFZXsYBGEUdQnTTAUBZn6vtnRY8u3K-dZDskv6pMBrsc" class="w-full h-full object-cover" alt="Soldado Soldy Profile"></div><h3 class="font-title-md text-title-md text-surface-bright">Soldado Soldy</h3>
+<p class="font-label-sm text-label-sm text-outline">Challenger Member</p>
+</div>
+<nav class="flex flex-col gap-2 mt-4">
+<button class="flex items-center gap-4 p-3 rounded-xl bg-primary-container text-on-primary-container font-bold transition-all hover:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: &quot;FILL&quot; 1;">fitness_center</span>
+<span class="font-label-md text-label-md">Challenges</span>
+</button>
+<button class="flex items-center gap-4 p-3 rounded-xl text-surface-variant hover:text-primary transition-all hover:bg-surface-container-highest/20">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-md text-label-md">Notifications</span>
+</button>
+<button class="flex items-center gap-4 p-3 rounded-xl text-surface-variant hover:text-primary transition-all hover:bg-surface-container-highest/20">
+<span class="material-symbols-outlined">mail</span>
+<span class="font-label-md text-label-md">Messages</span>
+</button>
+<button class="flex items-center gap-4 p-3 rounded-xl text-surface-variant hover:text-primary transition-all hover:bg-surface-container-highest/20">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">My Profile</span>
+</button>
+<button class="flex items-center gap-4 p-3 rounded-xl text-surface-variant hover:text-primary transition-all hover:bg-surface-container-highest/20">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</button>
+</nav>
+<div class="mt-auto flex flex-col gap-2 pt-6 border-t border-outline-variant/10">
+<button class="flex items-center gap-4 p-3 rounded-xl text-surface-variant hover:text-primary-fixed-dim transition-all">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</button>
+<button class="flex items-center gap-4 p-3 rounded-xl text-error-red hover:bg-error-container/10 transition-all">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</button>
+</div>
+</aside>
+<!-- Main Content Layout -->
+<main class="pb-10 px-4 md:px-margin-desktop xl:ml-64 flex justify-center gap-gutter pt-32">
+<!-- Central Feed -->
+<div class="flex-1 max-w-2xl flex flex-col gap-6"><div class="bg-surface-container-highest/10 border border-outline-variant/20 rounded-xl p-4 flex flex-col gap-4">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Close-up of a muscular arm holding a smartphone, capturing a gym selfie in a mirror. The gym is filled with high-end equipment and neon green lighting accents. The style is sharp, energetic, and highly focused on the grit and determination of athlete culture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKO270RxMmz4TwpW0p9ZuanoMdRv8cKQQdNhKlQ7K8IDswSyXYKvT_8bFYg3d0cDUg1YBSp4uW51J2zYaJiGxTvwVvPXUAmJekp3tqy-8dKyAnQrgxQZkeUyjylOkG-9rc7zKDVhsoLjnVb6PKhUKI1kACOuqIhFHsNndmuhqKFsKgAdGPAfOjnY5JCdpd42_6WlWt6i44tAkyBSRXKXr-lzhZb1i-bau77_hVT7bSAwHgS0iti6mYWw">
+</div>
+<button class="bg-surface-container-highest/20 text-outline hover:text-surface-bright text-left font-body-md text-body-md w-full py-3 px-6 rounded-full transition-all">
+                        What's your next challenge, Soldado?
+                    </button>
+</div>
+<div class="flex items-center justify-between border-t border-outline-variant/10 pt-4 px-2">
+<button class="flex items-center gap-2 text-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-primary-fixed-dim">image</span>
+<span class="font-label-md text-label-md">Photo</span>
+</button>
+<button class="flex items-center gap-2 text-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-tertiary">videocam</span>
+<span class="font-label-md text-label-md">Video</span>
+</button>
+<button class="flex items-center gap-2 text-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-secondary-fixed-dim">event</span>
+<span class="font-label-md text-label-md">Challenge</span>
+</button>
+</div>
+</div><div class="flex gap-4 overflow-x-auto hide-scrollbar pb-2">
+<!-- Create Story Card -->
+<div class="flex-shrink-0 w-28 h-40 relative rounded-xl overflow-hidden border border-outline-variant/20 group cursor-pointer">
+<img alt="User Avatar" class="w-full h-2/3 object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJ2ZhX4HKh9Cb2YZKBOaYfsMv40o9QtnyyPf62WECWrudIVSfGRAOiHuFeRCbDxRZy5hzeTKQ3wDSsq013v_kP5pv4RcGDR10ckhYQGZiJ6lBu7w-1QjwM-zwyYWSCVrjKhA6pWIjQ7rVfZ0zhFS6uAddM3q2g4JCSU8LcA7tINPCAA4HJZAW9kCyRgyAi2JIzcuGYYJJ2yP2CII8G6_ntMO4bVb-jt5qMyZnyY4XgcdfphRzWWmqHCw">
+<div class="absolute bottom-0 left-0 w-full h-1/3 bg-surface-container-highest/20 flex flex-col items-center justify-center pt-4">
+<div class="absolute -top-4 w-8 h-8 rounded-full bg-primary border-4 border-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[20px]">add</span>
+</div>
+<span class="font-label-sm text-label-sm text-surface-bright">Create Story</span>
+</div>
+</div>
+<!-- Friend Story 1 -->
+<div class="flex-shrink-0 w-28 h-40 relative rounded-xl overflow-hidden border border-outline-variant/20 group cursor-pointer">
+<img alt="Alice Jordan" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvXVi1OZIbp3IG9zcJffR0O8sbO2qsiK_22idNyIE0YASxzYUJl_qCUwhkeuMSSWZ9F2_7q6QtvsIKwKV-njqFmxWF-y2mF6EbyjGXpkbM-sGd59ZjWyNBQJRN0OOy4pVZyaBOklTWt5Kn6_2XE3Yn3MAnbclzUjYcqMvhiImA6ybqiobBtwUtk8K7-sZp1JZUjFWof33tsNYA7cG-9o8rwNdvLXbeQea2w3LobGiAfqYTAeqfc2XBcw">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2">
+<span class="font-label-sm text-label-sm text-white">Alice Jordan</span>
+</div>
+<div class="absolute top-2 left-2 w-8 h-8 rounded-full border-2 border-primary overflow-hidden">
+<img alt="Alice Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvXVi1OZIbp3IG9zcJffR0O8sbO2qsiK_22idNyIE0YASxzYUJl_qCUwhkeuMSSWZ9F2_7q6QtvsIKwKV-njqFmxWF-y2mF6EbyjGXpkbM-sGd59ZjWyNBQJRN0OOy4pVZyaBOklTWt5Kn6_2XE3Yn3MAnbclzUjYcqMvhiImA6ybqiobBtwUtk8K7-sZp1JZUjFWof33tsNYA7cG-9o8rwNdvLXbeQea2w3LobGiAfqYTAeqfc2XBcw">
+</div>
+</div>
+<!-- Friend Story 2 -->
+<div class="flex-shrink-0 w-28 h-40 relative rounded-xl overflow-hidden border border-outline-variant/20 group cursor-pointer">
+<img alt="Daniel Mwangi" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLXmrl7i4kbCPqJPTZzwIoCLOAez3OzxnKb79wp-LBI-V8KKkRe97phecGyHavfZ2WdwxGeLNlA4awiYeMsQgcl8xswQyxAfsk7NnVuVw8tP5OGDj9WSmDa4hXY9rgyxt6LcZimwJclz6mk3VqTsHTETt_Lu0VTSVDVOiZJZxX7nX6qevpAge8WNmvD7EzHbpE9dGAG7prhXVfZvD8HoZIuaR6YZ-79hMaORMu9LwbcgyszvRXMQLYqw">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2">
+<span class="font-label-sm text-label-sm text-white">Daniel Mwangi</span>
+</div>
+<div class="absolute top-2 left-2 w-8 h-8 rounded-full border-2 border-primary overflow-hidden">
+<img alt="Daniel Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLXmrl7i4kbCPqJPTZzwIoCLOAez3OzxnKb79wp-LBI-V8KKkRe97phecGyHavfZ2WdwxGeLNlA4awiYeMsQgcl8xswQyxAfsk7NnVuVw8tP5OGDj9WSmDa4hXY9rgyxt6LcZimwJclz6mk3VqTsHTETt_Lu0VTSVDVOiZJZxX7nX6qevpAge8WNmvD7EzHbpE9dGAG7prhXVfZvD8HoZIuaR6YZ-79hMaORMu9LwbcgyszvRXMQLYqw">
+</div>
+</div>
+<!-- Friend Story 3 -->
+<div class="flex-shrink-0 w-28 h-40 relative rounded-xl overflow-hidden border border-outline-variant/20 group cursor-pointer">
+<img alt="Clara Njeri" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_0gnbmQO4VfUhDTmCpdskARLt52rolKIAtIAdt6k6rit5n6W_abFknWv10SFCO3fyZGu9R1kMCce1PTtGHVm52VDuFTmES-HNtBxWDSsrnwLYupHDzLlaNqtF3aicQDZ7BsDrItcSAlxlm04AkgOAUgy-eVbMsisXC2UNwvPFe4mpKm8US5qBGq1Vd3UK5XwDElpgkf20zz8TIF4WP8QYVh38QeTeBudITJSVc-smf6YoI4I4e_1jxg">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2">
+<span class="font-label-sm text-label-sm text-white">Clara Njeri</span>
+</div>
+<div class="absolute top-2 left-2 w-8 h-8 rounded-full border-2 border-primary overflow-hidden">
+<img alt="Clara Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_0gnbmQO4VfUhDTmCpdskARLt52rolKIAtIAdt6k6rit5n6W_abFknWv10SFCO3fyZGu9R1kMCce1PTtGHVm52VDuFTmES-HNtBxWDSsrnwLYupHDzLlaNqtF3aicQDZ7BsDrItcSAlxlm04AkgOAUgy-eVbMsisXC2UNwvPFe4mpKm8US5qBGq1Vd3UK5XwDElpgkf20zz8TIF4WP8QYVh38QeTeBudITJSVc-smf6YoI4I4e_1jxg">
+</div>
+</div>
+</div>
+<!-- Create Post Card -->
+
+<!-- Feed Post 1 (Image) -->
+<article class="bg-surface-container-highest/10 border border-outline-variant/20 rounded-xl overflow-hidden group">
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center font-bold text-on-secondary-fixed">JD</div>
+<div>
+<h4 class="font-label-md text-label-md text-surface-bright">John Doe <span class="text-outline font-normal">• 2h ago</span></h4>
+<p class="font-label-sm text-label-sm text-primary-fixed-dim flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">bolt</span> 50k Step Challenge
+                            </p>
+</div>
+</div>
+<button class="material-symbols-outlined text-outline">more_horiz</button>
+</div>
+<p class="px-4 pb-4 font-body-md text-body-md text-surface-variant">Crushed the weekend goal! Who's joining me for the 100k next week? No excuses, just results. #ChallengerLife #FitnessGoals</p>
+<div class="relative h-96 w-full">
+<img class="w-full h-full object-cover" data-alt="A wide-angle landscape shot of a determined trail runner reaching a mountain peak during sunrise. The sky is a gradient of deep purples and fiery oranges. The runner is wearing technical apparel with neon reflective details. The overall mood is triumphant, epic, and inspiring, capturing the peak of human performance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARR91jcw6TjxxhYxWX2jCXJ09A6tWtTp34MqzkXtKQ7QzSVHPRYKleWWhqprF2qzsXJU-SNy0yvdB8YUNTiLykLUR7vn4dgUWFz4C4zp-qRoXhllqnYLJ3Hy1_YZavFVC894dh9sk-qofU7cgjdkYeQE04xuznkMZdzl42HRAvdy-ELYEjNQTw4sV3DAPz8aWT8gYf5A8AG_LgmgHNZhUff-utrcNRgIqqNuznX04D6AswEGMTi9bKwA">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-6">
+<span class="text-white font-title-md text-title-md">Victory at Sunrise</span>
+</div>
+</div>
+<div class="p-4 flex items-center justify-between border-t border-outline-variant/10">
+<div class="flex items-center gap-6">
+<button class="flex items-center gap-2 text-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+<span class="font-label-md text-label-md">1.2k</span>
+</button>
+<button class="flex items-center gap-2 text-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">comment</span>
+<span class="font-label-md text-label-md">45</span>
+</button>
+<button class="flex items-center gap-2 text-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">share</span>
+<span class="font-label-md text-label-md">Share</span>
+</button>
+</div>
+<button class="material-symbols-outlined text-surface-variant hover:text-primary-fixed-dim transition-colors">bookmark</button>
+</div>
+</article>
+<!-- Feed Post 2 (Text Only Bento Style) -->
+<article class="bg-primary-container/20 border border-primary/30 rounded-xl p-8 flex flex-col items-center text-center gap-6 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-20">
+<span class="material-symbols-outlined text-8xl">military_tech</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-primary-container text-on-primary-container font-label-sm text-label-sm uppercase tracking-wider">New Milestone</span>
+<h2 class="font-display-lg text-display-lg text-primary-fixed-dim">Master Challenger Elite</h2>
+<p class="font-body-lg text-body-lg text-surface-bright max-w-md">"Success is not final, failure is not fatal: it is the courage to continue that counts."</p>
+<button class="bg-primary hover:bg-primary-container text-on-primary font-bold px-8 py-3 rounded-full transition-all hover:scale-105 active:scale-95">
+                    View Achievement
+                </button>
+</article>
+<!-- Feed Post 3 (Video Placeholder) -->
+<article class="bg-surface-container-highest/10 border border-outline-variant/20 rounded-xl overflow-hidden">
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-tertiary flex items-center justify-center font-bold text-on-tertiary">SA</div>
+<div>
+<h4 class="font-label-md text-label-md text-surface-bright">Sarah Active <span class="text-outline font-normal">• 5h ago</span></h4>
+<p class="font-label-sm text-label-sm text-tertiary-fixed-dim">Morning Yoga Flow</p>
+</div>
+</div>
+<button class="material-symbols-outlined text-outline">more_horiz</button>
+</div>
+<div class="relative aspect-video bg-black flex items-center justify-center group cursor-pointer">
+<img class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" data-alt="A serene, high-end yoga studio with floor-to-ceiling windows overlooking a misty forest. A woman in minimalist earth-toned activewear is performing a complex balancing pose. The lighting is soft, natural, and calming. The interior design of the studio is brutalist-minimalist with polished concrete and warm wood accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_0gnbmQO4VfUhDTmCpdskARLt52rolKIAtIAdt6k6rit5n6W_abFknWv10SFCO3fyZGu9R1kMCce1PTtGHVm52VDuFTmES-HNtBxWDSsrnwLYupHDzLlaNqtF3aicQDZ7BsDrItcSAlxlm04AkgOAUgy-eVbMsisXC2UNwvPFe4mpKm8US5qBGq1Vd3UK5XwDElpgkf20zz8TIF4WP8QYVh38QeTeBudITJSVc-smf6YoI4I4e_1jxg">
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-16 h-16 rounded-full bg-primary/80 flex items-center justify-center text-white backdrop-blur-sm group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-4xl" style="font-variation-settings: &quot;FILL&quot; 1;">play_arrow</span>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-outline-variant/10">
+<div class="flex items-center gap-6">
+<button class="flex items-center gap-2 text-surface-variant"><span class="material-symbols-outlined">favorite</span> 892</button>
+<button class="flex items-center gap-2 text-surface-variant"><span class="material-symbols-outlined">comment</span> 12</button>
+</div>
+</div>
+</article>
+</div>
+<!-- Right Sidebar (Suggested/People) -->
+<aside class="hidden lg:flex flex-col gap-6 w-80 flex-shrink-0 top-32">
+<!-- Suggested Challenges -->
+<div class="bg-surface-container-highest/10 border border-outline-variant/20 rounded-xl p-5 p-4 border-outline-variant/10">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-title-md text-title-md text-surface-bright">Suggested for You</h3>
+<button class="text-primary-fixed-dim font-label-sm text-label-sm hover:underline">See All</button>
+</div>
+<div class="flex flex-col gap-4">
+<div class="flex gap-3 p-2 rounded-lg hover:bg-surface-container-highest/20 transition-colors cursor-pointer group">
+<div class="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="Vibrant close-up of high-tech running shoes on a wet asphalt track reflecting bright stadium lights. The focus is sharp on the texture of the shoes and the water droplets. The color palette is dominated by electric blues and deep blacks, conveying speed and technical precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG0XSsnSo1HKGIYhPF9MAjvuL2DDGaJHONEJb87tN3cYis0EfmxpTvvPh58ri6yhkf2OtHV5tvZQ4nutTJNYqTRwIVmiL4RLOxL2oM6cPxrqdhtoPs7qanj9XToP2e5SZ0Dox3Xb0vwnVw_sHEq7yOEzr_TiymBv_m6OLjjtk99vlHOPgIyFIvWdqmYQryEDxTieGOPhBzS2ztn0bXK-Wt5I8fd7XKM3McraWFaRcQzkTOTIh8BOfTYQ">
+</div>
+<div class="flex flex-col justify-center">
+<p class="font-label-md text-label-md text-surface-bright group-hover:text-primary-fixed-dim transition-colors">Marathon Prep 2024</p>
+<p class="font-label-sm text-label-sm text-outline">2.4k Challengers</p>
+</div>
+</div>
+<div class="flex gap-3 p-2 rounded-lg hover:bg-surface-container-highest/20 transition-colors cursor-pointer group">
+<div class="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A top-down aesthetic shot of a healthy poke bowl with colorful ingredients like salmon, avocado, edamame, and radish on a minimalist dark ceramic plate. The lighting is clean and bright, emphasizing fresh textures. The background is a dark slate texture that makes the colors of the food pop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZ86eQEvTs8gYNERxRJl99RyqNIulLri6-mVDEE2-H3X5oivRRBumrJGKE6AtLoWYXH3RCPPOW1s_tOoqtyDjQWHQHEhKdWUutUXSxOm0ZavqcCB8UL_716tsUJ6CJl3TXZTkIrM9IRaGUVWM3ZH4Nq_VcVemVNqbaLIQrZbbj4TM-fumaYQ2PRWL2aZi4tfD_Qsa4x_lo4nOL2pE3nYt2Zqx1Xyhk0qmHzoA6Q79LAU3aJPDglQPLSw">
+</div>
+<div class="flex flex-col justify-center">
+<p class="font-label-md text-label-md text-surface-bright group-hover:text-primary-fixed-dim transition-colors">30 Day Clean Eat</p>
+<p class="font-label-sm text-label-sm text-outline">1.1k Challengers</p>
+</div>
+</div>
+</div>
+</div>
+<!-- People You May Know -->
+<div class="bg-surface-container-highest/10 border border-outline-variant/20 rounded-xl p-5">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-title-md text-title-md text-surface-bright">People You May Know</h3>
+</div>
+<div class="flex flex-col gap-5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-secondary">
+<img class="w-full h-full object-cover" data-alt="A portrait of a confident woman in her 30s wearing a premium black tactical vest and fitness gear. She has a sleek ponytail and is looking directly at the camera with a slight smile. The background is an urban rooftop at dusk with city lights blurring into bokeh. High-end lifestyle photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvXVi1OZIbp3IG9zcJffR0O8sbO2qsiK_22idNyIE0YASxzYUJl_qCUwhkeuMSSWZ9F2_7q6QtvsIKwKV-njqFmxWF-y2mF6EbyjGXpkbM-sGd59ZjWyNBQJRN0OOy4pVZyaBOklTWt5Kn6_2XE3Yn3MAnbclzUjYcqMvhiImA6ybqiobBtwUtk8K7-sZp1JZUjFWof33tsNYA7cG-9o8rwNdvLXbeQea2w3LobGiAfqYTAeqfc2XBcw">
+</div>
+<div>
+<p class="font-label-md text-label-md text-surface-bright">Elena Chase</p>
+<p class="font-label-sm text-label-sm text-outline">Mutual: 12</p>
+</div>
+</div>
+<button class="bg-surface-container-highest/30 hover:bg-primary-container text-surface-bright hover:text-on-primary-container p-2 rounded-full transition-all">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+</button>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-secondary">
+<img class="w-full h-full object-cover" data-alt="A portrait of a male runner with athletic features, captured mid-stride but looking toward the camera. He is in a modern city park with architectural brutalist concrete elements. The lighting is harsh mid-day sun creating high-contrast shadows that emphasize his physique. Professional fitness magazine aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLXmrl7i4kbCPqJPTZzwIoCLOAez3OzxnKb79wp-LBI-V8KKkRe97phecGyHavfZ2WdwxGeLNlA4awiYeMsQgcl8xswQyxAfsk7NnVuVw8tP5OGDj9WSmDa4hXY9rgyxt6LcZimwJclz6mk3VqTsHTETt_Lu0VTSVDVOiZJZxX7nX6qevpAge8WNmvD7EzHbpE9dGAG7prhXVfZvD8HoZIuaR6YZ-79hMaORMu9LwbcgyszvRXMQLYqw">
+</div>
+<div>
+<p class="font-label-md text-label-md text-surface-bright">Marcus Volt</p>
+<p class="font-label-sm text-label-sm text-outline">New Member</p>
+</div>
+</div>
+<button class="bg-surface-container-highest/30 hover:bg-primary-container text-surface-bright hover:text-on-primary-container p-2 rounded-full transition-all">
+<span class="material-symbols-outlined text-[20px]">person_add</span>
+</button>
+</div>
+</div>
+<button class="w-full mt-6 py-2 rounded-xl border border-outline-variant/20 text-outline hover:text-surface-bright hover:border-primary-fixed-dim transition-all font-label-md text-label-md">
+                    Explore Directory
+                </button>
+</div>
+<!-- Footer Links -->
+<div class="px-4 text-outline font-label-sm text-label-sm flex flex-wrap gap-x-4 gap-y-2">
+<a class="hover:text-primary-fixed-dim" href="#">About</a>
+<a class="hover:text-primary-fixed-dim" href="#">Privacy</a>
+<a class="hover:text-primary-fixed-dim" href="#">Terms</a>
+<a class="hover:text-primary-fixed-dim" href="#">Help</a>
+<span class="">Challenger © 2024</span>
+</div>
+</aside>
+</main>
+<!-- FAB (Contextual for Creating Content) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 rounded-2xl bg-primary-container text-on-primary-container shadow-xl flex items-center justify-center hover:scale-110 active:scale-90 transition-transform z-40">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- Micro-interactions Script -->
+<script>
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (this.classList.contains('active:scale-95') || this.classList.contains('active:scale-90')) return;
+                this.classList.add('scale-95');
+                setTimeout(() => this.classList.remove('scale-95'), 100);
+            });
+        });
+
+        // Simple scroll effect for header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-lg', 'bg-on-surface/95', 'backdrop-blur-md');
+            } else {
+                header.classList.remove('shadow-lg', 'bg-on-surface/95', 'backdrop-blur-md');
+            }
+        });
+    </script>
+
+
+
+
+</body></html>

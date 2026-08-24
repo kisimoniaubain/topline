@@ -21,11 +21,11 @@ function PreloaderPage() {
 
       <div className="preloader-container">
         <img
-  src={logoicon}
-  alt="Topline"
-  className="preloader-logo"
-  style={{ width: '80px', height: 'auto' }}
-/>
+          src={logoicon}
+          alt="Topline"
+          className="preloader-logo"
+          style={{ width: '80px', height: 'auto' }}
+        />
         {/* <img
           src={logoicon}
           alt="Topline"

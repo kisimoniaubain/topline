@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+
 import {
   Image,
   Video,
@@ -13,12 +14,18 @@ import {
   Send,
   UserPlus,
   UserCheck,
+  ChevronLeft,
   ChevronRight,
 } from "lucide-react";
 
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import MobileNav from "../components/MobileNav";
+
+// Cloudinary Credentials
+const CLOUDINARY_CLOUD_NAME = "drqqahmxt";
+const CLOUDINARY_UPLOAD_PRESET = "topline2"; // Replace with your actual unsigned preset name
+
 const defaultPosts = [
   {
     id: 1,
@@ -362,9 +369,11 @@ function HomePage() {
     setShowComposer(true);
   };
 
-  /* =========================
+/* =========================
      STORY
   ========================= */
+
+  const storyFileInputRef = useRef(null);
 
   const openStory = (story) => {
     setActiveStory(story);
@@ -381,31 +390,39 @@ function HomePage() {
     );
   };
 
+  // 1. Triggers when clicking "Your story" button
   const createStory = () => {
-    const storyText = window.prompt(
-      "What do you want to share to your story?"
-    );
-
-    if (!storyText?.trim()) {
-      return;
+    if (storyFileInputRef.current) {
+      storyFileInputRef.current.click();
     }
+  };
+
+  // 2. Triggers after picking a photo/video file
+  const handleStoryFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Optional caption prompt
+    const caption = window.prompt("Add a caption to your story (optional):") || "";
+
+    const imageUrl = URL.createObjectURL(file);
 
     const newStory = {
       id: Date.now(),
       name: currentUserName,
-      text: storyText.trim(),
+      image: imageUrl, // Local preview URL
+      text: caption.trim(),
       viewed: true,
       own: true,
+      file: file, // Keep raw file for backend upload if needed
     };
 
-    setStories((previousStories) => [
-      newStory,
-      ...previousStories,
-    ]);
-
+    setStories((previousStories) => [newStory, ...previousStories]);
     setActiveStory(newStory);
-  };
 
+    // Reset input so the same file can be selected again if needed
+    e.target.value = "";
+  };
   /* =========================
      FRIENDS
   ========================= */
@@ -496,23 +513,33 @@ function HomePage() {
 
               {/* CREATE STORY */}
 
-              <button
-                className="story-card create-story"
-                onClick={createStory}
-              >
-                <div className="story-image">
-                  <span>
-                    {currentUserName.charAt(0)}
-                  </span>
-                </div>
+{/* 1. Hidden File Input */}
+<input
+  type="file"
+  ref={storyFileInputRef}
+  onChange={handleStoryFileChange}
+  accept="image/*,video/*"
+  style={{ display: "none" }}
+/>
 
-                <div className="create-story-button">
-                  <Plus size={18} />
-                </div>
+{/* 2. Your Create Story Button */}
+<button
+  type="button"
+  className="story-card create-story"
+  onClick={createStory}
+>
+  <div className="story-image">
+    <span>
+      {currentUserName ? currentUserName.charAt(0).toUpperCase() : "U"}
+    </span>
+  </div>
 
-                <strong>Your story</strong>
-              </button>
+  <div className="create-story-button">
+    <Plus size={18} />
+  </div>
 
+  <strong>Your story</strong>
+</button>
               {/* STORIES */}
 
               {visibleStories.map((story) => (
@@ -1143,32 +1170,202 @@ function HomePage() {
       ========================= */}
 
       {activeStory && (
-        <div className="modal-overlay">
-          <div className="story-viewer">
+<div className="modal-overlay">
+  <div className="story-viewer">
 
-            <button
-              className="icon-button"
-              onClick={() =>
-                setActiveStory(null)
-              }
-            >
-              <X size={24} />
-            </button>
+    {/* CLOSE */}
 
-            <div className="story-viewer-avatar">
-              {activeStory.name.charAt(0)}
-            </div>
+    <button
+      className="story-close-button"
+      onClick={() =>
+        setActiveStory(null)
+      }
+      aria-label="Close story"
+    >
+      <X size={24} />
+    </button>
 
-            <h2>
-              {activeStory.name}
-            </h2>
 
-            <p>
-              {activeStory.text ||
-                "This is a Topline story."}
-            </p>
-          </div>
+    {/* PROGRESS BAR */}
+
+    <div className="story-progress-bar">
+      <div className="story-progress-fill" />
+    </div>
+
+
+    {/* USER INFO */}
+
+    <div className="story-viewer-header">
+
+      <div className="story-viewer-avatar">
+
+        {activeStory.image ? (
+          <img
+            src={activeStory.image}
+            alt={activeStory.name}
+          />
+        ) : (
+          <span>
+            {activeStory.name
+              .charAt(0)
+              .toUpperCase()}
+          </span>
+        )}
+
+      </div>
+
+      <div className="story-viewer-user">
+
+        <strong>
+          {activeStory.name}
+        </strong>
+
+        <span>
+          {activeStory.time || "1h"}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    {/* STORY CONTENT */}
+
+    <div className="story-viewer-content">
+
+      {activeStory.image ? (
+
+        <img
+          src={activeStory.image}
+          alt={`${activeStory.name}'s story`}
+          className="story-viewer-image"
+        />
+
+      ) : activeStory.video ? (
+
+        <video
+          src={activeStory.video}
+          className="story-viewer-video"
+          controls
+          autoPlay
+          playsInline
+        />
+
+      ) : (
+
+        <div className="story-text-content">
+
+          <p>
+            {activeStory.text ||
+              "This is a Topline story."}
+          </p>
+
         </div>
+
+      )}
+
+    </div>
+
+
+    {/* TEXT OVER IMAGE */}
+
+    {activeStory.text &&
+      activeStory.image && (
+        <div className="story-overlay-text">
+          {activeStory.text}
+        </div>
+      )}
+
+
+    {/* PREVIOUS */}
+
+    <button
+      className="story-navigation story-prev"
+      onClick={() => {
+        console.log("Previous story");
+      }}
+      aria-label="Previous story"
+    >
+      ‹
+    </button>
+
+
+    {/* NEXT */}
+
+    <button
+      className="story-navigation story-next"
+      onClick={() => {
+        console.log("Next story");
+      }}
+      aria-label="Next story"
+    >
+      ›
+    </button>
+
+
+    {/* REACTIONS */}
+
+    <div className="story-reactions">
+
+      <button
+        type="button"
+        onClick={() =>
+          console.log("Liked story")
+        }
+      >
+        ❤️
+      </button>
+
+      <button type="button">
+        😂
+      </button>
+
+      <button type="button">
+        😮
+      </button>
+
+      <button type="button">
+        😢
+      </button>
+
+      <button type="button">
+        😡
+      </button>
+
+    </div>
+
+
+    {/* REPLY */}
+
+    <form
+      className="story-reply-box"
+      onSubmit={(event) => {
+        event.preventDefault();
+
+        console.log(
+          "Reply:",
+          event.target.reply.value
+        );
+
+        event.target.reset();
+      }}
+    >
+
+      <input
+        name="reply"
+        type="text"
+        placeholder={`Reply to ${activeStory.name}...`}
+        autoComplete="off"
+      />
+
+      <button type="submit">
+        <Send size={19} />
+      </button>
+
+    </form>
+
+  </div>
+</div>
       )}
     </div>
   );

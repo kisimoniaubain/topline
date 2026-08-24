@@ -1,0 +1,330 @@
+<!DOCTYPE html><html lang="en" class="dark"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+        try {
+            tailwind.config = {
+                darkMode: "class",
+                theme: {
+                    extend: {
+                        "colors": {
+                            "on-secondary-fixed-variant": "#3f465c",
+                            "on-primary-fixed": "#002109",
+                            "error-soft": "#FEF2F2",
+                            "surface-container-lowest": "#ffffff",
+                            "on-secondary-container": "#5c647a",
+                            "primary-container": "#008739",
+                            "primary": "#006b2c",
+                            "tertiary-fixed-dim": "#ffb2bf",
+                            "on-tertiary-fixed-variant": "#8a143c",
+                            "outline": "#6e7a6c",
+                            "tertiary": "#a72d51",
+                            "surface-container": "#e9f0e5",
+                            "surface-dim": "#d5dcd1",
+                            "on-secondary": "#ffffff",
+                            "on-primary-container": "#f7fff2",
+                            "error-red": "#EF4444",
+                            "tertiary-fixed": "#ffd9de",
+                            "surface-container-high": "#e3eadf",
+                            "secondary-fixed-dim": "#bec6e0",
+                            "surface-bright": "#f4fcf0",
+                            "secondary-fixed": "#dae2fd",
+                            "border-subtle": "#E2E8F0",
+                            "primary-fixed-dim": "#62df7d",
+                            "on-primary-fixed-variant": "#005320",
+                            "surface-variant": "#dde5d9",
+                            "on-tertiary": "#ffffff",
+                            "on-error": "#ffffff",
+                            "secondary-container": "#dae2fd",
+                            "error-container": "#ffdad6",
+                            "surface-tint": "#006e2d",
+                            "on-surface-variant": "#3e4a3d",
+                            "outline-variant": "#bdcaba",
+                            "secondary": "#565e74",
+                            "surface-container-low": "#eff6ea",
+                            "on-secondary-fixed": "#131b2e",
+                            "error": "#ba1a1a",
+                            "inverse-primary": "#62df7d",
+                            "on-primary": "#ffffff",
+                            "on-background": "#171d16",
+                            "primary-fixed": "#7ffc97",
+                            "surface": "#f4fcf0",
+                            "inverse-surface": "#2b322b",
+                            "inverse-on-surface": "#ecf3e7",
+                            "background": "#f4fcf0",
+                            "on-tertiary-container": "#fffbff",
+                            "on-tertiary-fixed": "#3f0016",
+                            "surface-container-highest": "#dde5d9",
+                            "on-surface": "#171d16",
+                            "tertiary-container": "#c74668",
+                            "surface-gray": "#F8FAFC",
+                            "on-error-container": "#93000a"
+                        },
+                        "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                        },
+                        "spacing": {
+                            "gutter": "16px",
+                            "margin-mobile": "20px",
+                            "margin-desktop": "40px",
+                            "unit": "4px",
+                            "touch-target": "48px"
+                        },
+                        "fontFamily": {
+                            "body-lg": ["Inter"],
+                            "title-md": ["Inter"],
+                            "body-md": ["Inter"],
+                            "headline-lg": ["Inter"],
+                            "display-lg": ["Inter"],
+                            "label-sm": ["Inter"],
+                            "label-md": ["Inter"]
+                        }
+                    }
+                }
+            }
+        } catch (_e) {}
+    }catch(_e){}</script></head><body class="selection:bg-primary-fixed selection:text-on-primary-fixed min-h-screen overflow-hidden bg-on-surface">
+
+<!-- Header: Reconstructed 3-Row Layout -->
+<header class="fixed top-0 left-0 w-full z-50 flex flex-col bg-on-surface border-b border-outline-variant/10">
+  
+  <!-- Row 1: Challenger Logo (Top Left) -->
+  <div class="w-full max-w-7xl mx-auto px-margin-desktop py-2 h-12 flex items-center justify-between">
+    <div class="flex items-center gap-2 flex-shrink-0">
+      <img alt="Challenger Logo" class="h-8 w-8 object-contain" src="https://lh3.googleusercontent.com/aida/AP1WRLtjpZAgAngQl7hsjR37NPTQiybGg0z4KXVGRrW5H617CFLGUq2sq_InKPc4RJhdf_rqjP9puAPO50cQyksdAv4kJ29ztgcf3xD0Ok-2j8ScICJlVnDsmH-wHS82GR4lQ3TNByY4dZHHpRs0gWWCtBVl7W2ZO19nxnNpLukInett6iKMBsOdGIS_6vMGpxgW43dURH3G0xI2l_9pFZXsYBGEUdQnTTAUBZn6vtnRY8u3K-dZDskv6pMBrsc">
+      <span class="font-headline-lg text-title-md font-black text-primary dark:text-primary-fixed-dim tracking-tighter">Challenger</span>
+    </div>
+    <!-- Spacer for alignment -->
+    <div class="w-24"></div>
+  </div>
+
+  <!-- Row 2: Search (Centered) & Options (Right) -->
+  <div class="w-full border-t border-outline-variant/5 bg-on-surface/30">
+    <div class="max-w-7xl mx-auto px-margin-desktop py-3 grid grid-cols-3 items-center"><!-- Search Left -->
+<div class="relative flex items-center bg-surface-container-highest/10 rounded-full px-4 border border-outline-variant/10 hover:border-primary/50 transition-colors py-1.5 w-full max-w-xs">
+  <span class="material-symbols-outlined text-outline mr-2 text-[20px]">search</span>
+  <input class="bg-transparent border-none focus:ring-0 text-label-sm font-label-sm text-surface-bright w-full placeholder:text-outline outline-none" placeholder="Search..." type="text">
+</div>
+<!-- Navigation Center -->
+<nav class="flex items-center justify-center gap-6">
+  <a class="font-label-md text-label-md text-surface-variant hover:text-primary transition-colors" href="#">Home</a>
+  <a class="font-label-md text-label-md text-surface-variant hover:text-primary transition-colors" href="#">Clips</a>
+  <a class="font-label-md text-label-md text-surface-variant hover:text-primary transition-colors" href="#">Notifications</a>
+  <a class="font-label-md text-label-md text-surface-variant hover:text-primary transition-colors" href="#">Messages</a>
+</nav>
+<!-- Options Right -->
+<div class="flex items-center justify-end gap-5">
+  <button class="material-symbols-outlined text-surface-variant hover:text-primary-fixed-dim transition-colors">menu</button>
+  <button class="material-symbols-outlined text-surface-variant hover:text-primary-fixed-dim transition-colors">group</button>
+  <div class="w-8 h-8 rounded-full overflow-hidden border-2 border-primary-container cursor-pointer hover:scale-105 transition-transform">
+    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAxdebz5GsW-lC1WvGL-izItAwm0ffH4OrAHT34pgNiBVC6ZS8zIG4yCqntVJXDjv9_O8-BAsalzX5sUPAgEIE8tNgfuy74WgZ6kxAdv6t21BEu_K_T3uDKdEf4LyC3z5mKE4vwMJL8PTljEev_83L5enkvN4xDRGXrIFPX2MIkhIHsHV1EG12yByvsGQllcYzlE3viIbsHSBMXfuc7g278DjXRTnJSsXGuaILclf_NoHPDDG4lahwivw">
+  </div>
+</div></div>
+  </div>
+
+  <!-- Row 3: Navigation Links (Centered) -->
+  
+</header>
+
+<main class="flex h-[calc(100vh-116px)] w-full overflow-hidden mt-[116px]">
+    <!-- Left Sidebar: Profile & Main Nav -->
+    <aside class="w-64 flex-shrink-0 border-r border-outline-variant/10 flex flex-col py-8 px-6 bg-on-surface hidden xl:flex">
+        <div class="mb-8 bg-surface-container-highest/10 p-4 rounded-xl border border-outline-variant/10">
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-container shadow-sm">
+                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKBu4wqiU29bjmz3Jse4TIV20695ChR3M11PWbKqk_ip2-5S1uSmv_VGv5JM3Xtu6s5YyptbSf7mmRA4v74GfCig0k-xjHBuk3VrhAhxH3YYBePNNiSv6VU1uoGXu_vG8LMtIMgTryyKTQLncUOS2WcIL7eJ4VCdt5Sw-1gPJF8Nw8HqR0a6TXoWqeFvNYeFnRzshtx3ahQh7uJAZUD7wxiWzRjlObWj6VvuWzFDjUUe9ECx9fIARbLw">
+                </div>
+                <div>
+                    <p class="font-title-md text-title-md text-surface-bright leading-tight">Soldado Soldy</p>
+                    <p class="text-label-sm text-outline">Elite Challenger</p>
+                </div>
+            </div>
+        </div>
+        
+        <nav class="flex flex-col gap-2">
+            <button class="flex items-center gap-4 p-3 rounded-xl bg-primary-container text-on-primary-container font-bold transition-all hover:scale-95">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+                <span class="font-label-md text-label-md">Challenges</span>
+            </button>
+            <button class="flex items-center gap-4 p-3 rounded-xl text-surface-variant hover:text-primary transition-all hover:bg-surface-container-highest/20">
+                <span class="material-symbols-outlined">notifications</span>
+                <span class="font-label-md text-label-md">Notifications</span>
+            </button>
+            <button class="flex items-center gap-4 p-3 rounded-xl text-surface-variant hover:text-primary transition-all hover:bg-surface-container-highest/20">
+                <span class="material-symbols-outlined">mail</span>
+                <span class="font-label-md text-label-md">Messages</span>
+            </button>
+            <button class="flex items-center gap-4 p-3 rounded-xl text-surface-variant hover:text-primary transition-all hover:bg-surface-container-highest/20">
+                <span class="material-symbols-outlined">account_circle</span>
+                <span class="font-label-md text-label-md">My Profile</span>
+            </button>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-outline-variant/10">
+            <div class="bg-primary/20 text-primary-fixed-dim p-4 rounded-xl border border-primary/30 relative overflow-hidden group cursor-pointer">
+                <div class="relative z-10">
+                    <p class="font-label-sm text-label-sm font-bold mb-1 opacity-80 uppercase tracking-widest">Weekly Rank</p>
+                    <p class="text-display-lg font-display-lg leading-none">#12</p>
+                </div>
+                <div class="absolute -right-2 -bottom-2 opacity-10 transform group-hover:scale-110 transition-transform">
+                    <span class="material-symbols-outlined text-[80px]">trending_up</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Center Content: Story Viewer -->
+    <section class="flex-1 bg-on-surface flex items-center justify-center p-4 relative overflow-hidden">
+        <!-- Story Container -->
+        <div class="relative w-full max-w-[450px] aspect-[9/16] bg-black rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden border border-white/10">
+            <!-- Story Content -->
+            <div class="absolute inset-0 z-0">
+                <img class="w-full h-full object-cover" data-alt="Story content" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7tatBjxmEuybu4hmFEqQl_3wHezXURvMdmjJS6-IaFHm2zvDeQHYFGCUvE77IXY2gTzB2LYdaGag5oASmXc1NpYtgWPD7lt8b1MwSzGWGLYYEucQeJw76IPFVyXOkWhizdI7F2Bp09cqmka5pDEMIMBedPKUvvu_e3ibK-qdVFVE4EkQRmDedI0cm7lMBhmrLChzeiQOS8QkvRWIczBhhvOI7yLHq_lRtrIJo81a9rcURQzWJDeMn_Q">
+            </div>
+            
+            <!-- Overlays -->
+            <div class="absolute inset-0 story-gradient z-10 pointer-events-none"></div>
+            
+            <!-- Header: Progress & User -->
+            <div class="absolute top-0 left-0 right-0 p-4 z-20">
+                <div class="flex gap-1 mb-4">
+                    <div class="flex-1 story-progress-bar">
+                        <div class="story-progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="flex-1 story-progress-bar">
+                        <div class="story-progress-fill" id="activeProgress" style="width: 65%;"></div>
+                    </div>
+                    <div class="flex-1 story-progress-bar">
+                        <div class="story-progress-fill"></div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full border-2 border-primary-fixed-dim overflow-hidden shadow-lg">
+                            <img class="w-full h-full object-cover" data-alt="Alice Avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_8Bn9o7RV_NOsfUbMm6E_tpPruCGy5zwPegtyD4dswVL5qZBsgg_yJYaUjusvWLsBRkKd2ykGZO-5vAuvToGmgaF8tbaqpycc5PdyDKMkbw19twuYT71W1tra4MigpwC6cvz8jYnmvLQUkPIt0q4712fHT2B1JG8UR_PossQnFLyMbxe0TfQJ10PsTubLCtN_7I1_AHS91_1jHvwQPw7BGEdaAzmH1DHkVl0qr9EmHjhV3QFGru4eWg">
+                        </div>
+                        <div>
+                            <h3 class="text-white font-bold text-sm">Alice Jordan</h3>
+                            <p class="text-white/60 text-xs">2 hours ago</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="text-white p-1 hover:bg-white/10 rounded-full transition-colors"><span class="material-symbols-outlined">more_horiz</span></button>
+                        <button class="text-white p-1 hover:bg-white/10 rounded-full transition-colors"><span class="material-symbols-outlined">close</span></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interaction Footer -->
+            <div class="absolute bottom-0 left-0 right-0 p-6 z-20">
+                <div class="flex items-center justify-center gap-4 mb-6">
+                    <button class="w-12 h-12 rounded-full glass-blur flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group">
+                        <span class="material-symbols-outlined text-red-400 group-hover:scale-125 transition-transform" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                    </button>
+                    <button class="w-12 h-12 rounded-full glass-blur flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group">
+                        <span class="material-symbols-outlined text-orange-400 group-hover:scale-125 transition-transform" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+                    </button>
+                    <button class="w-12 h-12 rounded-full glass-blur flex items-center justify-center text-white hover:scale-110 active:scale-95 transition-all group">
+                        <span class="material-symbols-outlined text-blue-400 group-hover:scale-125 transition-transform" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
+                    </button>
+                </div>
+                <div class="relative flex items-center gap-3">
+                    <input class="flex-1 bg-white/10 border border-white/20 rounded-full py-3 px-6 text-white placeholder:text-white/60 focus:ring-1 focus:ring-white outline-none glass-blur" placeholder="Send Message..." type="text">
+                    <button class="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary-container transition-all">
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <button class="absolute left-10 w-14 h-14 rounded-full glass-blur flex items-center justify-center text-white hover:bg-white/20 transition-all hidden md:flex">
+            <span class="material-symbols-outlined text-3xl">chevron_left</span>
+        </button>
+        <button class="absolute right-10 w-14 h-14 rounded-full glass-blur flex items-center justify-center text-white hover:bg-white/20 transition-all hidden md:flex">
+            <span class="material-symbols-outlined text-3xl">chevron_right</span>
+        </button>
+    </section>
+
+    <!-- Right Sidebar: Active Stories -->
+    <aside class="w-80 flex-shrink-0 border-l border-outline-variant/10 flex flex-col py-8 px-5 overflow-y-auto bg-on-surface hide-scrollbar">
+        <div class="mb-6">
+            <h2 class="font-title-md text-surface-bright mb-1">Active Stories</h2>
+            <p class="text-label-sm text-outline">Find new talent</p>
+        </div>
+
+        <div class="space-y-3">
+            <!-- Active User List -->
+            <div class="flex items-center justify-between p-3 rounded-xl bg-surface-container-highest/10 border border-outline-variant/10 hover:bg-surface-container-highest/20 transition-all group cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <div class="w-11 h-11 rounded-full p-[2px] bg-gradient-to-tr from-primary to-primary-fixed-dim">
+                            <div class="w-full h-full rounded-full border-2 border-on-surface bg-on-surface overflow-hidden">
+                                <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCI-UVOKJDegzvL2O6MjcbNbuamOMz0IddydzGDDPc4cnqmVjhuxFsfAXsQ63q8TLKFcQhwaF7xXTGnbJZDMfdRqE9DGlc3NPSwqYyR6zitoqimOxgTnh7eh8Wc9v-W8hv9xXWYCKkBGUJwN5gYeE8Q_diHqp1GcpprSF12XyFs-ZoBgP8rtcAqBG0augWSUa-r5nkR9zRSO0F2l31m5epJ18QTAK6o9yjmr1RGVtZR0Tgy0cl6-2gx0Q">
+                            </div>
+                        </div>
+                        <div class="absolute bottom-0 right-0 w-3 h-3 bg-primary border-2 border-on-surface rounded-full"></div>
+                    </div>
+                    <span class="font-label-md text-label-md text-surface-bright font-semibold">Marcus Chen</span>
+                </div>
+                <button class="text-primary-fixed-dim text-label-sm font-bold bg-primary/10 px-4 py-1.5 rounded-full hover:bg-primary hover:text-white transition-all">View</button>
+            </div>
+
+            <div class="flex items-center justify-between p-3 rounded-xl bg-primary/20 border-2 border-primary/40 group">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <div class="w-11 h-11 rounded-full p-[2px] bg-primary">
+                            <div class="w-full h-full rounded-full border-2 border-on-surface bg-on-surface overflow-hidden">
+                                <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxhWy_LdQZxZ3qdtof3T7yqsli8Q1U48W7m-PGsMLFO8-MsU-6Nh8sdSz-RWLFmosI9XsQfcdUXWPf1T4GH0PuvuNDut7oTONdz_zCI5fSpxjaGoHiAZLcJo2C4OTcPP-nEBYpJHWk3SyGnIpz2YdN8Z2B-4YZqp5a7gYMZwvccUkf7-io1cCqebeHU9NbbmD8GmEBB36zf5U4sEfhmsijqc2IsWi1yHcu6ok6eIGRwqcQK_M4Qe8Qug">
+                            </div>
+                        </div>
+                        <div class="absolute -top-1 -right-1 bg-primary text-[8px] text-white px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Now</div>
+                    </div>
+                    <div>
+                        <span class="font-label-md text-label-md text-surface-bright font-bold block">Alice Jordan</span>
+                        <span class="text-[10px] text-primary-fixed-dim flex items-center gap-1"><span class="w-1 h-1 bg-primary-fixed-dim rounded-full animate-pulse"></span> Viewing Now</span>
+                    </div>
+                </div>
+                <span class="material-symbols-outlined text-primary-fixed-dim" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+            </div>
+
+            <div class="flex items-center justify-between p-3 rounded-xl hover:bg-surface-container-highest/10 transition-all group cursor-pointer border border-transparent hover:border-outline-variant/10">
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <div class="w-11 h-11 rounded-full p-[2px] bg-gradient-to-tr from-primary to-primary-fixed-dim">
+                            <div class="w-full h-full rounded-full border-2 border-on-surface bg-on-surface overflow-hidden">
+                                <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxoQ19KVPua9v8dXRPqwi5uv9veRB7Ffbx99ukwG6gb1LifS35e6k1xwj0KmLdJ1CVTF_RZFmzeS38cFAbg6O_TU-zkOW1Tv1xdDUc1Lg3hc4O3SueTMxPvnz1S5Y0iiRI0QFFW2rYdiLttMmljlO5Hu9RVORzuaSG8pxNYcc_l2DsroS8mzJ__hoSbVyvfOQ_H2EF3KcK27e8K9yIrRzJ1F1L7neIwYAmGzncn2vJ4BjbuJ0oeUTJvw">
+                            </div>
+                        </div>
+                    </div>
+                    <span class="font-label-md text-label-md text-surface-bright">Sarah Jenkins</span>
+                </div>
+                <button class="text-surface-variant text-label-sm font-bold bg-surface-container-highest/10 px-4 py-1.5 rounded-full hover:bg-primary-container hover:text-on-primary-container transition-all">View</button>
+            </div>
+        </div>
+
+        <div class="mt-8 pt-8 border-t border-outline-variant/10">
+            <div class="bg-surface-container-highest/5 rounded-2xl p-6 text-center border border-outline-variant/10">
+                <span class="material-symbols-outlined text-4xl text-primary-fixed-dim mb-3">trending_up</span>
+                <h4 class="font-title-md text-surface-bright mb-2">Grow Your Fanbase</h4>
+                <p class="text-label-sm text-outline mb-4">Post your own story to appear in the active list of your followers.</p>
+                <button class="w-full py-3 bg-primary text-on-primary rounded-xl font-bold shadow-md hover:scale-[1.02] active:scale-95 transition-all">Create Story</button>
+            </div>
+            
+            <div class="mt-8 px-2 text-outline font-label-sm text-label-sm flex flex-wrap gap-x-4 gap-y-2">
+                <a class="hover:text-primary-fixed-dim" href="#">About</a>
+                <a class="hover:text-primary-fixed-dim" href="#">Privacy</a>
+                <a class="hover:text-primary-fixed-dim" href="#">Terms</a>
+                <a class="hover:text-primary-fixed-dim" href="#">Help</a>
+                <span class="w-full mt-2">Challenger © 2024</span>
+            </div>
+        </div>
+    </aside>
+</main>
+
+<script class="">
+    const progressBar = document.getElementById('activeProgress');
+    let progress = 65;
+    
+    function animateProgress() {
+        if (progress < 100) {</script></body></html>}
