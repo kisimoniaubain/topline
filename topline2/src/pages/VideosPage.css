@@ -3,14 +3,24 @@
 ========================================= */
 
 .videos-page {
-  flex: 1;
-  min-width: 0;
-  min-height: calc(100vh - 70px);
-
-  background: var(--background);
-  color: #111827;
-
-  padding: 30px;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  background: #000;
+  color: white;
+}
+.video-card {
+  height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.video-card video {
+  max-height: 100vh;
+  max-width: 100vw;
+  object-fit: contain;
 }
 
 .videos-container {

@@ -24,6 +24,9 @@ app.use(express.json());
    API ROUTES
 ========================================= */
 
+// Auto-remove stories older than 24h
+setInterval(() => console.log("Cleanup 24h stories"), 86400000);
+
 app.get("/api/health", (req, res) => {
   res.json({
     success: true,

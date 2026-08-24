@@ -18,6 +18,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import MobileNav from "../components/MobileNav";
@@ -85,6 +86,7 @@ const onlineFriends = [
 ];
 
 function HomePage() {
+  const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const videoInputRef = useRef(null);
 
@@ -341,32 +343,37 @@ function HomePage() {
      FILE SELECTION
   ========================= */
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     const file = event.target.files?.[0];
-
-    if (!file) {
-      return;
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: "POST", body: formData });
+      const data = await res.json();
+      setSelectedImage(data.secure_url);
+      setShowComposer(true);
+    } catch {
+      alert("Image upload failed");
     }
-
-    const imageUrl = URL.createObjectURL(file);
-
-    setSelectedImage(imageUrl);
-
-    setShowComposer(true);
   };
 
-  const handleVideoChange = (event) => {
+  const handleVideoChange = async (event) => {
     const file = event.target.files?.[0];
-
-    if (!file) {
-      return;
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    formData.append("resource_type", "video");
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload?resource_type=video`, { method: "POST", body: formData });
+      const data = await res.json();
+      setSelectedVideo(data.secure_url);
+      setShowComposer(true);
+    } catch {
+      alert("Video upload failed");
     }
-
-    const videoUrl = URL.createObjectURL(file);
-
-    setSelectedVideo(videoUrl);
-
-    setShowComposer(true);
   };
 
 /* =========================
@@ -398,29 +405,23 @@ function HomePage() {
   };
 
   // 2. Triggers after picking a photo/video file
-  const handleStoryFileChange = (e) => {
+  const handleStoryFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    // Optional caption prompt
     const caption = window.prompt("Add a caption to your story (optional):") || "";
-
-    const imageUrl = URL.createObjectURL(file);
-
-    const newStory = {
-      id: Date.now(),
-      name: currentUserName,
-      image: imageUrl, // Local preview URL
-      text: caption.trim(),
-      viewed: true,
-      own: true,
-      file: file, // Keep raw file for backend upload if needed
-    };
-
-    setStories((previousStories) => [newStory, ...previousStories]);
-    setActiveStory(newStory);
-
-    // Reset input so the same file can be selected again if needed
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    try {
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: "POST", body: formData });
+      const data = await res.json();
+      const imageUrl = data.secure_url;
+      const newStory = { id: Date.now(), name: currentUserName, image: imageUrl, text: caption.trim(), viewed: true, own: true };
+      setStories((prev) => [newStory, ...prev]);
+      setActiveStory(newStory);
+    } catch {
+      alert("Upload failed");
+    }
     e.target.value = "";
   };
   /* =========================
@@ -471,9 +472,12 @@ function HomePage() {
      VISIBLE DATA
   ========================= */
 
-  const visibleStories = showAllStories
-    ? stories
-    : stories.slice(0, 4);
+  const ownerStories = stories.filter(
+    (s) => s.own || s.name === currentUserName
+  );
+  const visibleStories = ownerStories.length > 0
+    ? [ownerStories[0]]
+    : [];
 
   const visiblePeople = showAllPeople
     ? people
@@ -551,13 +555,20 @@ function HomePage() {
                   }`}
                   key={story.id}
                   onClick={() =>
-                    openStory(story)
+                    navigate("/stories", {
+                      state: {
+                        stories,
+                        storyId: story.id,
+                      },
+                    })
                   }
                 >
                   <div className="story-image">
-                    <span>
-                      {story.name.charAt(0)}
-                    </span>
+                    {story.image ? (
+                      <img src={story.image} alt={story.name} style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "cover" }} />
+                    ) : (
+                      <span>{story.name.charAt(0)}</span>
+                    )}
                   </div>
 
                   <strong>{story.name}</strong>
@@ -896,6 +907,8 @@ function HomePage() {
                   src={post.video}
                   controls
                   className="post-image"
+                  onClick={() => navigate("/videos")}
+                  style={{ cursor: "pointer" }}
                 />
               )}
 

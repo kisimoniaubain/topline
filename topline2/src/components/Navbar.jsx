@@ -28,11 +28,26 @@ function Navbar({ onMenuClick }) {
     const handleStorageChange = () => {
       setUser(getStoredUser());
     };
-
-    // Listen to window storage events
     window.addEventListener("storage", handleStorageChange);
+    // Fetch profile image from server/Cloudinary
+    const userData = getStoredUser();
+    if (userData?.username) {
+      fetch(`/api/user/${userData.username}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.profileImage) setUser({ ...userData, profileImage: data.profileImage });
+        })
+        .catch(() => {});
+    }
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("topline_user");
+    localStorage.removeItem("topline_token");
+    setUser(null);
+    window.dispatchEvent(new Event("topline-auth-change"));
+  };
 
   const getInitial = () => {
     if (!user) return "K";
@@ -99,9 +114,9 @@ function Navbar({ onMenuClick }) {
             textDecoration: "none",
           }}
         >
-          {user?.profileImage ? (
+          {user?.profileImage || user?.image ? (
             <img
-              src={user.profileImage}
+              src={user?.profileImage || user?.image}
               alt="User profile"
               style={{
                 width: "100%",

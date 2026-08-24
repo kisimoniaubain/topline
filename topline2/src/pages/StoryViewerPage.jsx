@@ -13,9 +13,12 @@ import {
 } from "lucide-react";
 import "./StoryViewerPage.css";
 
+
 function StoryViewerPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const user = JSON.parse(localStorage.getItem("topline_user") || "{}");
+  const currentUserName = user.name || "User";
 
   const passedStories = location.state?.stories || [];
   const initialStoryId = location.state?.storyId;
@@ -32,6 +35,7 @@ function StoryViewerPage() {
   const [paused, setPaused] = useState(false);
   const [liked, setLiked] = useState(false);
   const [reply, setReply] = useState("");
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
 
   const currentStory = useMemo(
     () => stories[currentIndex],
@@ -129,7 +133,7 @@ function StoryViewerPage() {
   };
 
   const closeViewer = () => {
-    navigate("/");
+    navigate("/home");
   };
 
   const sendReply = (event) => {
@@ -148,6 +152,7 @@ function StoryViewerPage() {
   if (!currentStory) {
     return (
       <div className="story-viewer-empty">
+
         <button onClick={closeViewer}>
           <X size={22} />
         </button>
@@ -185,7 +190,11 @@ function StoryViewerPage() {
 
         <button className="your-story-card">
           <div className="story-sidebar-avatar">
-            <span>You</span>
+            {user.profileImage ? (
+              <img src={user.profileImage} alt={currentUserName} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
+            ) : (
+              <span style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 20, color: "#111" }}>{currentUserName ? currentUserName.charAt(0).toUpperCase() : "U"}</span>
+            )}
 
             <div className="story-add-icon">
               <Plus size={16} />
@@ -193,7 +202,7 @@ function StoryViewerPage() {
           </div>
 
           <div>
-            <strong>Your story</strong>
+            <strong>{currentUserName || "Your story"}</strong>
 
             <span>Add to your story</span>
           </div>
@@ -286,12 +295,22 @@ function StoryViewerPage() {
               <Volume2 size={19} />
             </button>
 
-            <button title="More">
+            <button title="More" onClick={() => setShowMoreMenu(!showMoreMenu)}>
               <MoreHorizontal size={21} />
             </button>
+            {showMoreMenu && (
+              <div className="post-menu" style={{ position: "absolute", top: 40, right: 0, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: 8, zIndex: 30, color: "#000", fontSize: 14, fontWeight: 700 }}>
+                {(currentStory?.own || currentStory?.name === currentUserName) && (
+                  <div>
+                    <button style={{ display: "block", width: "100%", textAlign: "left", padding: 6, background: "none", border: "none", cursor: "pointer", color: "#030303", fontWeight: 700, fontSize: 14 }} onClick={() => { setStories((prev) => prev.filter((s) => s.id !== currentStory.id)); closeViewer(); }}>Delete story</button>
+                    <button style={{ display: "block", width: "100%", textAlign: "left", padding: 6, background: "none", border: "none", cursor: "pointer", color: "#030303", fontWeight: 700, fontSize: 14 }} onClick={() => { const caption = window.prompt("Edit caption:"); if (caption !== null) { setStories((prev) => prev.map((s) => s.id === currentStory.id ? { ...s, text: caption.trim() } : s)); } }}>Edit story</button>
+                  </div>
+                )}
+              </div>
+            )}
 
             <button
-              onClick={closeViewer}
+              onClick={() => { navigate("/home"); window.location.href = "/home"; }}
               title="Close"
             >
               <X size={23} />

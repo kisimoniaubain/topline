@@ -415,21 +415,9 @@ a {
 
 .preview-image,
 .post-image {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 280px;
-  background:
-    linear-gradient(
-      135deg,
-      #111 0%,
-      #222 48%,
-      var(--orange) 100%
-    );
-  color: white;
-  font-size: 30px;
-  font-weight: 800;
-  letter-spacing: 4px;
+  max-width: 100%;
+  height: auto;
+  display: block;
   border-radius: 12px;
 }
 
@@ -724,7 +712,7 @@ a {
   height: 150px;
   overflow: hidden;
   border-radius: 12px;
-  background: var(--black);
+  background: transparent;
   color: white;
 }
 
