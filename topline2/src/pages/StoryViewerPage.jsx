@@ -12,6 +12,8 @@ import {
   Plus,
 } from "lucide-react";
 import "./StoryViewerPage.css";
+// import Logo from "./assets/logo.png";
+// import Logo from "../assets/logo.png";
 
 
 function StoryViewerPage() {

@@ -59,7 +59,8 @@ body {
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
+  border-inline: 1px solid rgba(255, 0, 0, 0);
+  /* border-inline: 1px solid var(--border); */
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -446,7 +447,9 @@ a {
   margin: auto;
   padding: 100px 28px;
 }
-
+.section-title h2{
+  color: var(--orange);
+}
 .section-heading > span {
   color: var(--orange);
   font-size: 11px;
@@ -483,6 +486,14 @@ a {
   border-radius: 11px;
   background: var(--orange);
   color: white;
+}
+.post-menu button{
+  color: black;
+  font-size: 13px;
+
+}
+.icon-button{
+  color: red;
 }
 
 .feature-card h3 {
@@ -531,9 +542,9 @@ a {
 }
 
 .navbar-left {
-  display: flex;
+  /* display: flex; */
   align-items: center;
-  gap: 14px;
+  /* gap: 14px; */
 }
 
 .mobile-menu-button {
@@ -828,7 +839,24 @@ a {
 .post-user strong {
   font-size: 13px;
 }
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f1f1;
+  flex-shrink: 0;
+}
 
+.user-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 .post-user span {
   margin-top: 3px;
   color: var(--gray);
@@ -892,7 +920,9 @@ a {
   color: var(--orange);
   background: rgba(245, 127, 23, 0.06);
 }
-
+.comment{
+  font-size: 12px;
+}
 .right-sidebar {
   display: flex;
   flex-direction: column;

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
   Image,
@@ -49,6 +50,34 @@ const defaultPosts = [
     liked: false,
   },
 ];
+
+const copyPost = async (post) => {
+  try {
+    const postId = post._id || post.id;
+
+    if (!postId) {
+      console.error("Post ID not found:", post);
+      return;
+    }
+
+    const postLink = `${window.location.origin}/post/${postId}`;
+
+    await navigator.clipboard.writeText(postLink);
+
+    alert("Post link copied!");
+  } catch (error) {
+    console.error("Failed to copy post link:", error);
+    alert("Unable to copy post link.");
+  }
+};
+
+const currentUser = JSON.parse(
+  localStorage.getItem("topline_user") || "{}"
+);
+
+const currentUserName = currentUser?.name || "User";
+const currentUserProfileImage =
+  currentUser?.profileImage || currentUser?.avatar || "";
 
 const defaultStories = [
   {
@@ -499,18 +528,6 @@ function HomePage() {
           <section className="stories-section">
             <div className="section-title">
               <h2>Stories</h2>
-
-              <button
-                onClick={() =>
-                  setShowAllStories(
-                    !showAllStories
-                  )
-                }
-              >
-                {showAllStories
-                  ? "Show less"
-                  : "See all"}
-              </button>
             </div>
 
             <div className="stories-row">
@@ -583,9 +600,25 @@ function HomePage() {
 
           <section className="composer-card">
             <div className="composer-top">
-              <div className="user-avatar">
+<div className="user-avatar">
+<Link
+  to={`/profile/${currentUser?.id || currentUser?._id}`}
+  className="user-avatar"
+>
+  {currentUserProfileImage ? (
+    <img
+      src={currentUserProfileImage}
+      alt={currentUserName}
+      className="user-avatar-image"
+    />
+  ) : (
+    currentUserName?.charAt(0)?.toUpperCase() || "U"
+  )}
+</Link>
+</div>
+              {/* <div className="user-avatar">
                 {currentUserName.charAt(0)}
-              </div>
+              </div> */}
 
               <button
                 className="composer-input"
@@ -848,13 +881,12 @@ function HomePage() {
 
                   {activeMenu === post.id && (
                     <div className="post-menu">
-                      <button
-                        onClick={() =>
-                          copyPost(post)
-                        }
-                      >
-                        Copy post
-                      </button>
+                  <button
+                    type="button"
+                    onClick={() => copyPost(post)}
+                  >
+                    Copy link
+                  </button>
 
                       {post.user.username ===
                         user.username && (
@@ -868,6 +900,14 @@ function HomePage() {
                           Delete post
                         </button>
                       )}
+                    <button
+                      type="button"
+                      onClick={() => copyPost(post)}
+                      className="flex items-center gap-2"
+                    >
+                      <Share2 size={18} />
+                      <span>Share</span>
+                    </button>
                     </div>
                   )}
                 </div>
@@ -919,20 +959,6 @@ function HomePage() {
                   </div>
                 )}
 
-              <div className="post-stats">
-                <span>
-                  ❤️ {post.likes}
-                </span>
-
-                <span>
-                  {post.comments.length} comments
-                </span>
-
-                <span>
-                  {post.shares} shares
-                </span>
-              </div>
-
               {/* ACTIONS */}
 
               <div className="post-actions">
@@ -947,6 +973,7 @@ function HomePage() {
                     toggleLike(post.id)
                   }
                 >
+                
                   <Heart
                     size={20}
                     fill={
@@ -955,6 +982,7 @@ function HomePage() {
                         : "none"
                     }
                   />
+                  <span>{post.likes}</span>
 
                   {post.liked
                     ? "Liked"
@@ -971,7 +999,8 @@ function HomePage() {
                     )
                   }
                 >
-                  <MessageCircle size={20} />
+                <MessageCircle size={20} />
+                  <span>{post.comments.length}</span>
                   Comment
                 </button>
 
@@ -981,6 +1010,7 @@ function HomePage() {
                   }
                 >
                   <Share2 size={20} />
+                  <span>{post.shares}</span>
                   Share
                 </button>
               </div>
