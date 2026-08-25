@@ -1,8 +1,17 @@
-import { useState } from "react";
-import { ArrowRight, Eye, EyeOff } from "lucide-react"; // FIXED: Changed from react-router-dom to lucide-react
+import { useEffect, useState } from "react";
+import { ArrowRight, Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
 import "./loginPage.css";
+
+const messages = [
+  "Loading your feed...",
+  "Connecting with friends...",
+  "Finding new challenges...",
+  "Sending message...",
+  "Uploading your profile...",
+  "Welcome to Challenger!",
+];
 
 function LoginPage({ onLogin }) {
   const navigate = useNavigate();
@@ -16,6 +25,61 @@ function LoginPage({ onLogin }) {
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // ==========================
+  // Typing Animation
+  // ==========================
+  const [typingText, setTypingText] = useState("");
+
+  useEffect(() => {
+    let messageIndex = 0;
+    let characterIndex = 0;
+    let deleting = false;
+    let timeout;
+
+    const typeMessage = () => {
+      const currentMessage = messages[messageIndex];
+
+      if (!deleting) {
+        characterIndex++;
+
+        setTypingText(
+          currentMessage.substring(0, characterIndex)
+        );
+
+        if (characterIndex >= currentMessage.length) {
+          deleting = true;
+
+          timeout = setTimeout(typeMessage, 1800);
+          return;
+        }
+
+        timeout = setTimeout(typeMessage, 70);
+      } else {
+        characterIndex--;
+
+        setTypingText(
+          currentMessage.substring(0, characterIndex)
+        );
+
+        if (characterIndex <= 0) {
+          deleting = false;
+
+          messageIndex =
+            (messageIndex + 1) % messages.length;
+
+          timeout = setTimeout(typeMessage, 500);
+          return;
+        }
+
+        timeout = setTimeout(typeMessage, 40);
+      }
+    };
+
+    typeMessage();
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   const handleChange = (event) => {
     setForm({
@@ -57,45 +121,86 @@ function LoginPage({ onLogin }) {
       // 1. Store Auth Token
       localStorage.setItem("topline_token", data.token);
 
-      // 2. Read existing cached local user data to preserve uploaded Cloudinary photos
+      // 2. Read existing cached local user data
       let localUser = {};
+
       try {
-        const storedLocal = localStorage.getItem("topline_user");
-        if (storedLocal && storedLocal !== "undefined" && storedLocal !== "null") {
+        const storedLocal =
+          localStorage.getItem("topline_user");
+
+        if (
+          storedLocal &&
+          storedLocal !== "undefined" &&
+          storedLocal !== "null"
+        ) {
           localUser = JSON.parse(storedLocal);
         }
 
-        // Also check scoped storage key if available
-        const userKey = `topline_user_${data.user?.username || data.user?.id || data.user?.email}`;
-        const storedUserScoped = localStorage.getItem(userKey);
-        if (storedUserScoped && storedUserScoped !== "undefined") {
-          const parsedScoped = JSON.parse(storedUserScoped);
-          localUser = { ...localUser, ...parsedScoped };
+        const userKey = `topline_user_${
+          data.user?.username ||
+          data.user?.id ||
+          data.user?.email
+        }`;
+
+        const storedUserScoped =
+          localStorage.getItem(userKey);
+
+        if (
+          storedUserScoped &&
+          storedUserScoped !== "undefined"
+        ) {
+          const parsedScoped =
+            JSON.parse(storedUserScoped);
+
+          localUser = {
+            ...localUser,
+            ...parsedScoped,
+          };
         }
       } catch (e) {
-        console.error("Error reading stored user cache:", e);
+        console.error(
+          "Error reading stored user cache:",
+          e
+        );
       }
 
       // 3. Merge backend user with local profile & cover images
       const mergedUser = {
         ...data.user,
-        profileImage: data.user?.profileImage || localUser?.profileImage || "",
-        coverImage: data.user?.coverImage || localUser?.coverImage || "",
+        profileImage:
+          data.user?.profileImage ||
+          localUser?.profileImage ||
+          "",
+        coverImage:
+          data.user?.coverImage ||
+          localUser?.coverImage ||
+          "",
       };
 
-      // 4. Save merged user data back to localStorage
-      localStorage.setItem("topline_user", JSON.stringify(mergedUser));
+      // 4. Save merged user data
+      localStorage.setItem(
+        "topline_user",
+        JSON.stringify(mergedUser)
+      );
 
       if (mergedUser.username || mergedUser.id) {
-        const userKey = `topline_user_${mergedUser.username || mergedUser.id}`;
-        localStorage.setItem(userKey, JSON.stringify(mergedUser));
+        const userKey = `topline_user_${
+          mergedUser.username || mergedUser.id
+        }`;
+
+        localStorage.setItem(
+          userKey,
+          JSON.stringify(mergedUser)
+        );
       }
 
-      // Trigger storage event so Navbar updates instantly
+      // Trigger storage event
       window.dispatchEvent(new Event("storage"));
 
+      // Tell App that authentication succeeded
       onLogin();
 
+      // Go to Home
       navigate("/home", { replace: true });
     } catch (error) {
       console.error("Login error:", error);
@@ -206,6 +311,51 @@ function LoginPage({ onLogin }) {
           </Link>
         </p>
       </div>
+
+   {/* animated massages */}
+      <div class="col-md-5 col-sm-5">
+
+
+          <div class="chat-animation">
+
+           <div class="message received">
+             👋 Hello!
+           </div>
+
+           <div class="message sent">
+              Hi! 😊
+           </div>
+
+           <div class="message received">
+              Ready for today's challenge?
+           </div>
+
+           <div class="message sent">
+              Absolutely! 🚀
+           </div>
+
+           <div class="message received">
+              Loading your feed...
+           </div>
+          <div class="typing-container">
+
+          <div className="message sent typing-message">
+          <span id="typing-text" className="typing-text">
+            {typingText}
+          </span>
+          <span className="cursor">|</span>
+        </div>
+
+        <button class="send-btn">
+        <i class="fa-solid fa-paper-plane"></i>
+        </button>
+
+         </div>
+          </div>
+
+           </div>
+      
+
     </div>
   );
 }

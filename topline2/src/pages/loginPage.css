@@ -257,3 +257,244 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+
+
+
+
+
+.chat-animation{
+    position:absolute;
+    right:12%;
+    top:50%;
+    transform:translateY(-50%);
+    width:280px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.message{
+    max-width:220px;
+    padding:12px 18px;
+    border-radius:20px;
+    font-size:15px;
+    opacity:0;
+    animation:popup 8s infinite;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+.received{
+    background:#ffffff6e;
+    color:#222;
+    align-self:flex-start;
+    border: 1px solid rgb(255, 255, 255);
+}
+
+.sent{
+    background:#e9870677;
+    color:white;
+    align-self:flex-end;
+    border: 1px solid #e9870677;
+    
+}
+/* Faster message timing */
+.message:nth-child(1){animation-delay:0s;}
+.message:nth-child(2){animation-delay:.45s;}
+.message:nth-child(3){animation-delay:.90s;}
+.message:nth-child(4){animation-delay:1.35s;}
+.message:nth-child(5){animation-delay:1.80s;}
+
+
+/* Faster and smoother animation */
+@keyframes popup{
+
+    0%{
+        opacity:0;
+        transform:translateY(30px) scale(.8);
+    }
+
+    10%{
+        opacity:1;
+        transform:translateY(0) scale(1);
+    }
+
+    70%{
+        opacity:1;
+    }
+
+    100%{
+        opacity:0;
+        transform:translateY(-20px);
+    }
+}
+
+
+
+
+
+
+.typing-container{
+    display:flex;
+    align-items:flex-end;
+    gap:10px;
+    margin-top:22px;
+}
+
+.typing-message{
+    min-width:220px;
+    max-width:260px;
+    min-height:50px;
+
+    display:flex;
+    align-items:center;
+
+    padding:12px 18px;
+
+    border-radius:22px;
+    background:#e9870677;
+    color:#fff;
+
+    animation:none !important;
+    opacity:1 !important;
+    border: 1px solid #fafafa;
+    box-shadow:0 8px 20px #001608;
+}
+
+.typing-text{
+    font-size:15px;
+    white-space:nowrap;
+    overflow:hidden;
+}
+
+.cursor{
+    margin-left:2px;
+    animation:blink .8s infinite;
+}
+
+@keyframes blink{
+    50%{
+        opacity:0;
+    }
+}
+
+/* Separate Send Button */
+.send-btn{
+    width:48px;
+    height:48px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#e9870677;
+    color:#fff;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    cursor:pointer;
+    border: 1px solid #fafafa;
+    box-shadow:0 8px 20px #001608;
+    /* box-shadow:0 8px 20px rgba(0,177,64,.35); */
+}
+
+.send-btn i{
+    font-size:18px;
+}
+
+.sending{
+    animation:sendAnimation .7s ease;
+}
+
+@keyframes sendAnimation{
+
+    0%{
+        transform:translateX(0) scale(1);
+    }
+
+    40%{
+        transform:translateX(12px) translateY(-6px) rotate(-20deg) scale(1.15);
+    }
+
+    70%{
+        transform:translateX(5px) translateY(-2px) rotate(-10deg);
+    }
+
+    100%{
+        transform:translateX(0) translateY(0) rotate(0deg) scale(1);
+    }
+
+}
+
+/* Pulse Animation */
+@keyframes sendPulse{
+
+    0%{
+        transform:scale(1);
+    }
+
+    50%{
+        transform:scale(1.15);
+        box-shadow:0 0 18px rgba(255,255,255,.8);
+    }
+
+    100%{
+        transform:scale(1);
+    }
+
+}
+.sending{
+    animation:sendFly .6s ease;
+}
+
+@keyframes sendFly{
+
+    0%{
+        transform:translateX(0) rotate(0deg);
+    }
+
+    50%{
+        transform:translateX(8px) rotate(-20deg);
+    }
+
+    100%{
+        transform:translateX(0) rotate(0deg);
+    }
+
+}
+
+/* Hide chat animation on mobile */
+@media (max-width: 768px) {
+  .chat-animation {
+    display: none;
+  }
+}
+
+
+.send-btn i {
+  display: inline-block;
+  animation: planeFly 2s ease-in-out infinite;
+}
+
+@keyframes planeFly {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate(3px, -3px) rotate(-8deg);
+  }
+
+  50% {
+    transform: translate(6px, -5px) rotate(-12deg);
+  }
+
+  75% {
+    transform: translate(3px, -3px) rotate(-8deg);
+  }
+
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}

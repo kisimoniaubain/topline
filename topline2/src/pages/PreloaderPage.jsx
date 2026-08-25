@@ -9,7 +9,13 @@ function PreloaderPage() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate("/login", { replace: true });
+      const token = localStorage.getItem("topline_token");
+
+      if (token) {
+        navigate("/home", { replace: true });
+      } else {
+        navigate("/login", { replace: true });
+      }
     }, 3000);
 
     return () => clearTimeout(timer);
@@ -24,13 +30,8 @@ function PreloaderPage() {
           src={logoicon}
           alt="Topline"
           className="preloader-logo"
-          style={{ width: '80px', height: 'auto' }}
+          style={{ width: "80px", height: "auto" }}
         />
-        {/* <img
-          src={logoicon}
-          alt="Topline"
-          className="preloader-logo"
-        /> */}
 
         <div className="loading-dots">
           <span></span>
@@ -42,9 +43,7 @@ function PreloaderPage() {
           Topline is loading...
         </div>
 
-        <div className="preloader-progress">
-          {/* <div className="preloader-progress-fill"></div> */}
-        </div>
+        <div className="preloader-progress"></div>
       </div>
     </div>
   );
