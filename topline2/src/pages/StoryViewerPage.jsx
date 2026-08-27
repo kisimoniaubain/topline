@@ -1,31 +1,40 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+
 import {
   X,
   ChevronLeft,
   ChevronRight,
   MoreHorizontal,
   Pause,
+  Play,
   Volume2,
   Heart,
   Send,
-  Plus,
+  Clock,
 } from "lucide-react";
-import "./StoryViewerPage.css";
-// import Logo from "./assets/logo.png";
-// import Logo from "../assets/logo.png";
 
+import "./StoryViewerPage.css";
+
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import MobileNav from "../components/MobileNav";
 
 function StoryViewerPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const user = JSON.parse(localStorage.getItem("topline_user") || "{}");
+
+  const user = JSON.parse(
+    localStorage.getItem("topline_user") || "{}"
+  );
+
   const currentUserName = user.name || "User";
 
   const passedStories = location.state?.stories || [];
   const initialStoryId = location.state?.storyId;
 
   const [stories, setStories] = useState(passedStories);
+
   const [currentIndex, setCurrentIndex] = useState(() => {
     const index = passedStories.findIndex(
       (story) => story.id === initialStoryId
@@ -38,6 +47,13 @@ function StoryViewerPage() {
   const [liked, setLiked] = useState(false);
   const [reply, setReply] = useState("");
   const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [soundOn, setSoundOn] = useState(true);
+
+  /*
+   * ================================
+   * CURRENT STORY
+   * ================================
+   */
 
   const currentStory = useMemo(
     () => stories[currentIndex],
@@ -45,9 +61,60 @@ function StoryViewerPage() {
   );
 
   /*
-   * Load stories from localStorage if the page was
-   * opened directly.
+   * ================================
+   * HELPERS
+   * ================================
    */
+
+  const getOwnerName = (story) => {
+    return (
+      story?.name ||
+      story?.user?.name ||
+      story?.owner?.name ||
+      "User"
+    );
+  };
+
+  const getOwnerAvatar = (story) => {
+    return (
+      story?.profileImage ||
+      story?.avatar ||
+      story?.user?.profileImage ||
+      story?.user?.avatar ||
+      story?.owner?.profileImage ||
+      story?.owner?.avatar ||
+      null
+    );
+  };
+
+  const resetStoryState = () => {
+    setLiked(false);
+    setReply("");
+    setShowMoreMenu(false);
+  };
+
+  const changeStory = (newIndex) => {
+    setCurrentIndex(newIndex);
+    resetStoryState();
+  };
+
+  const saveStories = (updatedStories) => {
+    try {
+      localStorage.setItem(
+        "topline_stories",
+        JSON.stringify(updatedStories)
+      );
+    } catch (error) {
+      console.error("Unable to save stories:", error);
+    }
+  };
+
+  /*
+   * ================================
+   * LOAD STORIES
+   * ================================
+   */
+
   useEffect(() => {
     if (passedStories.length > 0) return;
 
@@ -65,15 +132,21 @@ function StoryViewerPage() {
   }, [passedStories.length]);
 
   /*
-   * Mark the current story as viewed.
+   * ================================
+   * MARK STORY AS VIEWED
+   * ================================
    */
+
   useEffect(() => {
     if (!currentStory) return;
 
     setStories((previousStories) =>
       previousStories.map((story) =>
         story.id === currentStory.id
-          ? { ...story, viewed: true }
+          ? {
+              ...story,
+              viewed: true,
+            }
           : story
       )
     );
@@ -85,7 +158,10 @@ function StoryViewerPage() {
 
       const updatedStories = savedStories.map((story) =>
         story.id === currentStory.id
-          ? { ...story, viewed: true }
+          ? {
+              ...story,
+              viewed: true,
+            }
           : story
       );
 
@@ -96,18 +172,21 @@ function StoryViewerPage() {
     } catch (error) {
       console.error("Unable to update story:", error);
     }
-  }, [currentStory]);
+  }, [currentStory?.id]);
 
   /*
-   * Automatic story progression.
+   * ================================
+   * AUTOMATIC STORY PROGRESSION
+   * ================================
    */
+
   useEffect(() => {
     if (!currentStory || paused) return;
 
+    if (currentIndex >= stories.length - 1) return;
+
     const timer = setTimeout(() => {
-      if (currentIndex < stories.length - 1) {
-        setCurrentIndex((index) => index + 1);
-      }
+      changeStory(currentIndex + 1);
     }, 5000);
 
     return () => clearTimeout(timer);
@@ -118,25 +197,45 @@ function StoryViewerPage() {
     stories.length,
   ]);
 
+  /*
+   * ================================
+   * PREVIOUS STORY
+   * ================================
+   */
+
   const previousStory = () => {
     if (currentIndex > 0) {
-      setCurrentIndex((index) => index - 1);
-      setLiked(false);
-      setReply("");
+      changeStory(currentIndex - 1);
     }
   };
 
+  /*
+   * ================================
+   * NEXT STORY
+   * ================================
+   */
+
   const nextStory = () => {
     if (currentIndex < stories.length - 1) {
-      setCurrentIndex((index) => index + 1);
-      setLiked(false);
-      setReply("");
+      changeStory(currentIndex + 1);
     }
   };
+
+  /*
+   * ================================
+   * CLOSE VIEWER
+   * ================================
+   */
 
   const closeViewer = () => {
     navigate("/home");
   };
+
+  /*
+   * ================================
+   * SEND REPLY
+   * ================================
+   */
 
   const sendReply = (event) => {
     event.preventDefault();
@@ -145,336 +244,648 @@ function StoryViewerPage() {
 
     console.log("Reply:", {
       storyId: currentStory?.id,
-      message: reply,
+      message: reply.trim(),
     });
 
     setReply("");
   };
 
-  if (!currentStory) {
-    return (
-      <div className="story-viewer-empty">
+  /*
+   * ================================
+   * DELETE STORY
+   * ================================
+   */
 
-        <button onClick={closeViewer}>
-          <X size={22} />
-        </button>
+  const deleteStory = () => {
+    if (!currentStory) return;
 
-        <h2>No stories available</h2>
-
-        <p>
-          There are currently no stories to display.
-        </p>
-      </div>
+    const updatedStories = stories.filter(
+      (story) => story.id !== currentStory.id
     );
-  }
+
+    setStories(updatedStories);
+    saveStories(updatedStories);
+
+    if (updatedStories.length === 0) {
+      closeViewer();
+      return;
+    }
+
+    if (currentIndex >= updatedStories.length) {
+      setCurrentIndex(updatedStories.length - 1);
+    }
+
+    setShowMoreMenu(false);
+  };
+
+  /*
+   * ================================
+   * EDIT STORY
+   * ================================
+   */
+
+  const editStory = () => {
+    if (!currentStory) return;
+
+    const caption = window.prompt(
+      "Edit story caption:",
+      currentStory.text || ""
+    );
+
+    if (caption === null) return;
+
+    const updatedStories = stories.map((story) =>
+      story.id === currentStory.id
+        ? {
+            ...story,
+            text: caption.trim(),
+          }
+        : story
+    );
+
+    setStories(updatedStories);
+    saveStories(updatedStories);
+
+    setShowMoreMenu(false);
+  };
+
+  /*
+   * ================================
+   * STORY OWNERS
+   * ================================
+   */
+
+  const storyOwners = useMemo(() => {
+    const owners = [];
+
+    stories.forEach((story) => {
+      const ownerName = getOwnerName(story);
+
+      const alreadyExists = owners.some(
+        (owner) => owner.name === ownerName
+      );
+
+      if (!alreadyExists) {
+        owners.push({
+          ...story,
+          name: ownerName,
+        });
+      }
+    });
+
+    return owners;
+  }, [stories]);
+
+  /*
+   * ================================
+   * OWNER CHECK
+   * ================================
+   */
+
+  const isOwner =
+    currentStory?.own ||
+    getOwnerName(currentStory) === currentUserName;
+
+  /*
+   * ================================
+   * PAGE
+   * ================================
+   */
 
   return (
-    <div className="story-viewer-page">
+    <div className="app-shell story-app-shell">
 
-      {/* =========================================
-          LEFT SIDEBAR
-      ========================================= */}
+      {/* =================================
+          NAVBAR
+      ================================= */}
 
-      <aside className="story-sidebar">
+      <Navbar />
 
-        <div className="story-sidebar-header">
-          <button
-            className="story-close-mobile"
-            onClick={closeViewer}
-          >
-            <X size={22} />
-          </button>
+      <div className="app-layout story-app-layout">
 
-          <h1>Stories</h1>
-        </div>
+        {/* =================================
+            LEFT SIDEBAR
+        ================================= */}
 
-        {/* YOUR STORY */}
+        <Sidebar />
 
-        <button className="your-story-card">
-          <div className="story-sidebar-avatar">
-            {user.profileImage ? (
-              <img src={user.profileImage} alt={currentUserName} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }} />
-            ) : (
-              <span style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 20, color: "#111" }}>{currentUserName ? currentUserName.charAt(0).toUpperCase() : "U"}</span>
-            )}
+        {/* =================================
+            MIDDLE STORY VIEWER
+        ================================= */}
 
-            <div className="story-add-icon">
-              <Plus size={16} />
+        <main className="feed story-viewer-page">
+
+          {!currentStory ? (
+
+            /* =================================
+               EMPTY STATE
+            ================================= */
+
+            <div className="story-empty-page">
+
+              <div className="story-empty-card">
+
+                <button
+                  className="story-empty-close"
+                  onClick={closeViewer}
+                  aria-label="Close story viewer"
+                >
+                  <X size={22} />
+                </button>
+
+                <div className="story-empty-icon">
+                  <Clock size={38} />
+                </div>
+
+                <h2>No stories available</h2>
+
+                <p>
+                  There are currently no stories to display.
+                </p>
+
+                <button
+                  className="primary-button"
+                  onClick={closeViewer}
+                >
+                  Back to Home
+                </button>
+
+              </div>
+
             </div>
-          </div>
 
-          <div>
-            <strong>{currentUserName || "Your story"}</strong>
+          ) : (
 
-            <span>Add to your story</span>
-          </div>
-        </button>
+            /* =================================
+               STORY VIEWER
+            ================================= */
 
-        <div className="story-sidebar-divider" />
+            <div className="story-viewer-inner">
 
-        <h3>All Stories</h3>
+              {/* STORY HEADER */}
 
-        <div className="story-sidebar-list">
-          {stories.map((story, index) => (
-            <button
-              key={story.id}
-              className={`story-sidebar-item ${
-                index === currentIndex
-                  ? "active"
-                  : ""
-              }`}
-              onClick={() => {
-                setCurrentIndex(index);
-                setLiked(false);
-                setReply("");
-              }}
-            >
-              <div
-                className={`story-sidebar-ring ${
-                  story.viewed
-                    ? "viewed"
-                    : ""
-                }`}
-              >
-                {story.image ? (
-                  <img
-                    src={story.image}
-                    alt={story.name}
-                  />
-                ) : (
-                  <span>
-                    {story.name
-                      ?.charAt(0)
-                      .toUpperCase()}
-                  </span>
-                )}
-              </div>
+              <div className="story-viewer-header">
 
-              <div className="story-sidebar-info">
-                <strong>{story.name}</strong>
+                <div className="story-header-title">
 
-                <span>
-                  {story.viewed
-                    ? "Viewed"
-                    : "New story"}
-                </span>
-              </div>
-            </button>
-          ))}
-        </div>
-      </aside>
-
-      {/* =========================================
-          MAIN VIEWER
-      ========================================= */}
-
-      <main className="story-viewer-main">
-
-        {/* TOP BAR */}
-
-        <div className="story-viewer-top">
-
-          <div className="story-brand">
-            <span>TOPLINE</span>
-          </div>
-
-          <div className="story-viewer-actions">
-
-            <button
-              onClick={() =>
-                setPaused(!paused)
-              }
-              title={
-                paused
-                  ? "Play"
-                  : "Pause"
-              }
-            >
-              <Pause size={19} />
-            </button>
-
-            <button title="Sound">
-              <Volume2 size={19} />
-            </button>
-
-            <button title="More" onClick={() => setShowMoreMenu(!showMoreMenu)}>
-              <MoreHorizontal size={21} />
-            </button>
-            {showMoreMenu && (
-              <div className="post-menu" style={{ position: "absolute", top: 40, right: 0, background: "#fff", border: "1px solid #e5e7eb", borderRadius: 8, padding: 8, zIndex: 30, color: "#000", fontSize: 14, fontWeight: 700 }}>
-                {(currentStory?.own || currentStory?.name === currentUserName) && (
-                  <div>
-                    <button style={{ display: "block", width: "100%", textAlign: "left", padding: 6, background: "none", border: "none", cursor: "pointer", color: "#030303", fontWeight: 700, fontSize: 14 }} onClick={() => { setStories((prev) => prev.filter((s) => s.id !== currentStory.id)); closeViewer(); }}>Delete story</button>
-                    <button style={{ display: "block", width: "100%", textAlign: "left", padding: 6, background: "none", border: "none", cursor: "pointer", color: "#030303", fontWeight: 700, fontSize: 14 }} onClick={() => { const caption = window.prompt("Edit caption:"); if (caption !== null) { setStories((prev) => prev.map((s) => s.id === currentStory.id ? { ...s, text: caption.trim() } : s)); } }}>Edit story</button>
+                  <div className="story-header-icon">
+                    <Clock size={20} />
                   </div>
-                )}
+
+                  <div>
+                    <h1>Stories</h1>
+
+                    <p>
+                      {currentIndex + 1} of{" "}
+                      {stories.length}
+                    </p>
+                  </div>
+
+                </div>
+
+                <div className="story-header-actions">
+
+                  {/* PAUSE / PLAY */}
+
+                  <button
+                    onClick={() =>
+                      setPaused((value) => !value)
+                    }
+                    title={
+                      paused
+                        ? "Play story"
+                        : "Pause story"
+                    }
+                  >
+                    {paused ? (
+                      <Play size={18} />
+                    ) : (
+                      <Pause size={18} />
+                    )}
+                  </button>
+
+                  {/* SOUND */}
+
+                  <button
+                    onClick={() =>
+                      setSoundOn((value) => !value)
+                    }
+                    title={
+                      soundOn
+                        ? "Mute"
+                        : "Unmute"
+                    }
+                  >
+                    <Volume2
+                      size={18}
+                      className={
+                        !soundOn
+                          ? "muted-icon"
+                          : ""
+                      }
+                    />
+                  </button>
+
+                  {/* MORE */}
+
+                  <div className="story-more-wrapper">
+
+                    <button
+                      title="More"
+                      onClick={() =>
+                        setShowMoreMenu(
+                          (value) => !value
+                        )
+                      }
+                    >
+                      <MoreHorizontal size={20} />
+                    </button>
+
+                    {showMoreMenu && (
+                      <div className="story-more-menu">
+
+                        {isOwner ? (
+                          <>
+                            <button
+                              onClick={editStory}
+                            >
+                              Edit story
+                            </button>
+
+                            <button
+                              className="danger"
+                              onClick={deleteStory}
+                            >
+                              Delete story
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              console.log(
+                                "Report story:",
+                                currentStory.id
+                              );
+
+                              setShowMoreMenu(false);
+                            }}
+                          >
+                            Report story
+                          </button>
+                        )}
+
+                      </div>
+                    )}
+
+                  </div>
+
+                  {/* CLOSE */}
+
+                  <button
+                    className="story-close-button"
+                    onClick={closeViewer}
+                    title="Close"
+                  >
+                    <X size={21} />
+                  </button>
+
+                </div>
+
               </div>
-            )}
 
-            <button
-              onClick={() => { navigate("/home"); window.location.href = "/home"; }}
-              title="Close"
-            >
-              <X size={23} />
-            </button>
+              {/* STORY PROGRESS */}
 
-          </div>
-        </div>
+              <div className="story-progress-container">
 
-        {/* PROGRESS */}
+                {stories.map((story, index) => (
+                  <div
+                    key={story.id}
+                    className="story-progress"
+                  >
+                    <div
+                      className={
+                        index < currentIndex
+                          ? "completed"
+                          : index === currentIndex
+                          ? "current"
+                          : ""
+                      }
+                    />
+                  </div>
+                ))}
 
-        <div className="story-progress-container">
-          {stories.map((story, index) => (
-            <div
-              key={story.id}
-              className="story-progress"
-            >
+              </div>
+
+              {/* =================================
+                  LARGE STORY AREA
+              ================================= */}
+
               <div
-                className={
-                  index < currentIndex
-                    ? "completed"
-                    : index === currentIndex
-                    ? "current"
-                    : ""
+                className="story-viewer-content"
+                onMouseEnter={() =>
+                  setPaused(true)
                 }
-              />
-            </div>
-          ))}
-        </div>
+                onMouseLeave={() =>
+                  setPaused(false)
+                }
+              >
 
-        {/* USER */}
+                {/* PREVIOUS BUTTON */}
 
-        <div className="story-user">
+                <button
+                  className="story-navigation previous"
+                  onClick={previousStory}
+                  disabled={currentIndex === 0}
+                  aria-label="Previous story"
+                >
+                  <ChevronLeft size={30} />
+                </button>
 
-          <div className="story-user-avatar">
-            {currentStory.image ? (
-              <img
-                src={currentStory.image}
-                alt={currentStory.name}
-              />
-            ) : (
-              currentStory.name
-                ?.charAt(0)
-                .toUpperCase()
-            )}
-          </div>
+                {/* STORY CARD */}
 
-          <div>
-            <strong>
-              {currentStory.name}
-            </strong>
+                <div className="story-card">
 
-            <span>
-              {currentStory.time || "1h"}
-            </span>
-          </div>
+                  <div className="story-image-container">
 
-        </div>
+                    {currentStory.image ? (
+                      <img
+                        src={currentStory.image}
+                        alt={`${getOwnerName(
+                          currentStory
+                        )}'s story`}
+                        className="story-main-image"
+                      />
+                    ) : (
+                      <div className="story-no-image">
 
-        {/* STORY */}
+                        <span>
+                          {getOwnerName(
+                            currentStory
+                          )
+                            .charAt(0)
+                            .toUpperCase()}
+                        </span>
 
-        <div
-          className="story-stage"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
-        >
+                      </div>
+                    )}
 
-          <button
-            className="story-navigation previous"
-            onClick={previousStory}
-            disabled={currentIndex === 0}
-          >
-            <ChevronLeft size={32} />
-          </button>
+                    {/* CAPTION */}
 
-          <div className="story-image-container">
+                    {currentStory.text && (
+                      <div className="story-caption">
+                        {currentStory.text}
+                      </div>
+                    )}
 
-            {currentStory.image ? (
-              <img
-                src={currentStory.image}
-                alt={`${currentStory.name}'s story`}
-                className="story-main-image"
-              />
-            ) : (
-              <div className="story-no-image">
-                <span>
-                  {currentStory.name
-                    ?.charAt(0)
-                    .toUpperCase()}
-                </span>
+                  </div>
+
+                  {/* LEFT CLICK AREA */}
+
+                  <button
+                    className="story-image-hit-area left"
+                    onClick={previousStory}
+                    aria-label="Previous story"
+                  />
+
+                  {/* RIGHT CLICK AREA */}
+
+                  <button
+                    className="story-image-hit-area right"
+                    onClick={nextStory}
+                    aria-label="Next story"
+                  />
+
+                </div>
+
+                {/* NEXT BUTTON */}
+
+                <button
+                  className="story-navigation next"
+                  onClick={nextStory}
+                  disabled={
+                    currentIndex ===
+                    stories.length - 1
+                  }
+                  aria-label="Next story"
+                >
+                  <ChevronRight size={30} />
+                </button>
+
               </div>
-            )}
 
-          </div>
+              {/* REACTIONS */}
 
-          <button
-            className="story-navigation next"
-            onClick={nextStory}
-            disabled={
-              currentIndex ===
-              stories.length - 1
-            }
-          >
-            <ChevronRight size={32} />
-          </button>
+              <div className="story-reactions">
 
-        </div>
+                <button title="Love">
+                  ❤️
+                </button>
 
-        {/* REACTIONS */}
+                <button title="Laugh">
+                  😂
+                </button>
 
-        <div className="story-reactions">
+                <button title="Wow">
+                  😮
+                </button>
 
-          <button>❤️</button>
-          <button>😂</button>
-          <button>😮</button>
-          <button>😢</button>
-          <button>😡</button>
+                <button title="Sad">
+                  😢
+                </button>
 
-        </div>
+                <button title="Angry">
+                  😡
+                </button>
 
-        {/* REPLY */}
+              </div>
 
-        <form
-          className="story-reply"
-          onSubmit={sendReply}
-        >
-          <input
-            type="text"
-            placeholder={`Reply to ${currentStory.name}...`}
-            value={reply}
-            onChange={(event) =>
-              setReply(event.target.value)
-            }
-          />
+              {/* REPLY */}
 
-          <button
-            type="button"
-            className={`story-like ${
-              liked ? "liked" : ""
-            }`}
-            onClick={() =>
-              setLiked(!liked)
-            }
-          >
-            <Heart
-              size={20}
-              fill={
-                liked
-                  ? "currentColor"
-                  : "none"
-              }
-            />
-          </button>
+              <form
+                className="story-reply"
+                onSubmit={sendReply}
+              >
 
-          <button
-            type="submit"
-            className="story-send"
-          >
-            <Send size={19} />
-          </button>
-        </form>
+                <input
+                  type="text"
+                  placeholder={`Reply to ${getOwnerName(
+                    currentStory
+                  )}...`}
+                  value={reply}
+                  onChange={(event) =>
+                    setReply(event.target.value)
+                  }
+                />
 
-      </main>
+                <button
+                  type="button"
+                  className={`story-like ${
+                    liked ? "liked" : ""
+                  }`}
+                  onClick={() =>
+                    setLiked((value) => !value)
+                  }
+                  title="Like"
+                >
+                  <Heart
+                    size={19}
+                    fill={
+                      liked
+                        ? "currentColor"
+                        : "none"
+                    }
+                  />
+                </button>
+
+                <button
+                  type="submit"
+                  className="story-send"
+                  title="Send reply"
+                >
+                  <Send size={18} />
+                </button>
+
+              </form>
+
+            </div>
+          )}
+
+        </main>
+
+        {/* =================================
+            RIGHT STORY OWNER PANEL
+        ================================= */}
+
+        {currentStory && (
+          <aside className="story-owner-panel">
+
+            <div className="story-owner-card">
+
+              <div className="story-owner-heading">
+
+                <div>
+                  <h2>Stories</h2>
+
+                  <p>
+                    People with stories
+                  </p>
+                </div>
+
+                <span>
+                  {storyOwners.length}
+                </span>
+
+              </div>
+
+              <div className="story-owner-list">
+
+                {storyOwners.map((storyOwner) => {
+
+                  const ownerStories =
+                    stories.filter(
+                      (story) =>
+                        getOwnerName(story) ===
+                        storyOwner.name
+                    );
+
+                  const ownerStoryIndex =
+                    stories.findIndex(
+                      (story) =>
+                        getOwnerName(story) ===
+                        storyOwner.name
+                    );
+
+                  const avatar =
+                    getOwnerAvatar(storyOwner);
+
+                  const isCurrentOwner =
+                    getOwnerName(currentStory) ===
+                    storyOwner.name;
+
+                  return (
+                    <button
+                      key={`${storyOwner.name}-${storyOwner.id || ownerStoryIndex}`}
+                      className={`story-owner-list-item ${
+                        isCurrentOwner
+                          ? "active"
+                          : ""
+                      }`}
+                      onClick={() => {
+
+                        if (
+                          ownerStoryIndex >= 0
+                        ) {
+                          changeStory(
+                            ownerStoryIndex
+                          );
+                        }
+
+                      }}
+                    >
+
+                      {/* AVATAR */}
+
+                      <div
+                        className={`story-owner-list-avatar ${
+                          isCurrentOwner
+                            ? "active-ring"
+                            : ""
+                        }`}
+                      >
+
+                        {avatar ? (
+                          <img
+                            src={avatar}
+                            alt={storyOwner.name}
+                          />
+                        ) : (
+                          <span>
+                            {storyOwner.name
+                              ?.charAt(0)
+                              .toUpperCase()}
+                          </span>
+                        )}
+
+                      </div>
+
+                      {/* OWNER INFO */}
+
+                      <div className="story-owner-list-info">
+
+                        <strong>
+                          {storyOwner.name}
+                        </strong>
+
+                        <span>
+                          {ownerStories.length === 1
+                            ? "1 story"
+                            : `${ownerStories.length} stories`}
+                        </span>
+
+                      </div>
+
+                      <ChevronRight
+                        size={17}
+                        className="story-owner-arrow"
+                      />
+
+                    </button>
+                  );
+                })}
+
+              </div>
+
+            </div>
+
+          </aside>
+        )}
+
+      </div>
+
+      {/* MOBILE NAVIGATION */}
+
+      <MobileNav />
+
     </div>
   );
 }

@@ -5,6 +5,7 @@ import logoicon from "../assets/favicon.png";
 import "./PreloaderPage.css";
 
 function PreloaderPage() {
+  if (localStorage.getItem("topline_dark") === "1") document.body.classList.add("dark");
   const navigate = useNavigate();
 
   useEffect(() => {

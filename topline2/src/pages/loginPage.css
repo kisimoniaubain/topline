@@ -1,3 +1,15 @@
+body.dark .login-form-col,
+body.dark .login-container {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+body.dark .auth-page .login-form-col,
+body.dark .auth-page .login-container {
+  background: #0a0a0a !important;
+  color: #f0e6c8 !important;
+}
+
 .login-container { display: flex; height: 100vh; }
 .login-form-col { flex: 1; padding: 2rem; }
 .login-image-col { flex: 1; }
@@ -5,10 +17,14 @@
 
 /* AUTH PAGE STYLES */
 
+body.dark .auth-page {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
 .auth-page {
   min-height: 100vh;
-  background: var(--light) url("../assets/logimage.jfif") center center / cover no-repeat;
-  /* background-attachment: fixed; */
+  background: url("/assets/logimage.png") center center / cover no-repeat;
   display: flex;
   flex-direction: column;
   padding: 60px;
@@ -23,7 +39,7 @@
   right: -10px;
   bottom: -40px;
   border-radius: 50%;
-  border: 85px solid rgba(255, 102, 0, 0.25);
+  border: 85px solid rgba(255, 102, 0, 0.973);
   pointer-events: none;
 }
 
@@ -62,7 +78,8 @@
 
 
 .auth-brand {
-  margin-right: 38pc;
+  margin-right: 40pc;
+  margin-top: 41px;
 }
 
 @media (max-width: 768px) {
@@ -72,18 +89,34 @@
   }
 }
 
+body.dark .auth-card {
+  background: #0a0a0a !important;
+  color: #f0e6c8 !important;
+  border-color: #2e303a !important;
+}
+
 .auth-card {
-  width: min(100%, 400px);
-  /* width: min(100%, 470px); */
+  width: min(100%, 360px);
   background: white;
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 38px;
+  padding: 28px;
   box-shadow: var(--shadow);
 }
 
+body.dark .register-card {
+  background: #0a0a0a !important;
+  color: #f0e6c8 !important;
+  border-color: #2e303a !important;
+}
+
 .register-card {
-  width: min(100%, 560px);
+  width: min(100%, 360px);
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: var(--shadow);
 }
 
 .auth-heading {
@@ -125,6 +158,13 @@
   color: var(--gray);
 }
 
+body.dark .auth-form input,
+body.dark .auth-form textarea {
+  background: #0a0a0a !important;
+  color: #f0e6c8 !important;
+  border-color: #2e303a !important;
+}
+
 .auth-form input {
   width: 100%;
   height: 46px;
@@ -132,7 +172,7 @@
   border-radius: 9px;
   padding: 0 13px;
   outline: none;
-  background: white;
+  background: rgb(221, 10, 10);
   color: var(--black);
   transition: border 150ms ease;
 }

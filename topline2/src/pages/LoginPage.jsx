@@ -7,10 +7,10 @@ import "./loginPage.css";
 const messages = [
   "Loading your feed...",
   "Connecting with friends...",
-  "Finding new challenges...",
+  "Finding new friends...",
   "Sending message...",
   "Uploading your profile...",
-  "Welcome to Challenger!",
+  "Welcome to topline!",
 ];
 
 function LoginPage({ onLogin }) {
@@ -327,7 +327,7 @@ function LoginPage({ onLogin }) {
            </div>
 
            <div class="message received">
-              Ready for today's challenge?
+              Ready for today's online chat?
            </div>
 
            <div class="message sent">

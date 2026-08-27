@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Bell,
   MessageCircle,
@@ -7,6 +8,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
+import "./Navbar.css";
 
 // Safe localStorage getter
 const getStoredUser = () => {
@@ -22,6 +24,8 @@ const getStoredUser = () => {
 
 function Navbar({ onMenuClick }) {
   const [user, setUser] = useState(() => getStoredUser());
+  const [showMenu, setShowMenu] = useState(false);
+  const navigate = useNavigate();
 
   // Listen for real-time updates when user edits profile in other components/tabs
   useEffect(() => {
@@ -85,11 +89,18 @@ function Navbar({ onMenuClick }) {
       <div className="navbar-actions">
         <Link
           to="/notifications"
-          className="nav-icon-button"
+          className="nav-icon-button desktop-only"
           aria-label="Notifications"
         >
           <Bell size={21} />
-
+          <span className="notification-dot">3</span>
+        </Link>
+        <Link
+          to="/menu"
+          className="nav-icon-button mobile-only"
+          aria-label="Menu"
+        >
+          <Menu size={21} />
           <span className="notification-dot">3</span>
         </Link>
 

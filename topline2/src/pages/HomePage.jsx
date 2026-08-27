@@ -222,35 +222,48 @@ function HomePage() {
     ) {
       return;
     }
-
     const newPost = {
       id: Date.now(),
-
-      user: {
-        name: currentUserName,
-        username: user.username || "user",
-      },
-
+      user: { name: currentUserName, username: user.username || "user" },
       text: postText.trim(),
-
       image: selectedImage,
-
       video: selectedVideo,
-
       feeling: selectedFeeling,
-
-      location,
-
+      location: location,
       createdAt: "Just now",
-
       likes: 0,
-
       comments: [],
-
       shares: 0,
-
       liked: false,
     };
+    // const newPost = {
+    //   id: Date.now(),
+
+    //   user: {
+    //     name: currentUserName,
+    //     username: user.username || "user",
+    //   },
+
+    //   text: postText.trim(),
+
+    //   image: selectedImage,
+
+    //   video: selectedVideo,
+
+    //   feeling: selectedFeeling,
+
+    //   location,
+
+    //   createdAt: "Just now",
+
+    //   likes: 0,
+
+    //   comments: [],
+
+    //   shares: 0,
+
+    //   liked: false,
+    // };
 
     setPosts((previousPosts) => [
       newPost,
@@ -396,7 +409,7 @@ function HomePage() {
     formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
     formData.append("resource_type", "video");
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload?resource_type=video`, { method: "POST", body: formData });
+      const res = await fetch("/api/upload/video", { method: "POST", body: formData });
       const data = await res.json();
       setSelectedVideo(data.secure_url);
       setShowComposer(true);
@@ -444,7 +457,7 @@ function HomePage() {
     try {
       const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: "POST", body: formData });
       const data = await res.json();
-      const imageUrl = data.secure_url;
+      const imageUrl = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80";
       const newStory = { id: Date.now(), name: currentUserName, image: imageUrl, text: caption.trim(), viewed: true, own: true };
       setStories((prev) => [newStory, ...prev]);
       setActiveStory(newStory);

@@ -19,6 +19,8 @@ function RegisterPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [typingText, setTypingText] = useState("");
+
   const handleChange = (event) => {
     setForm({
       ...form,
@@ -44,22 +46,19 @@ function RegisterPage() {
     try {
       setLoading(true);
 
-      const response = await fetch(
-        "/api/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: form.name,
-            username: form.username,
-            email: form.email,
-            password: form.password,
-            dateOfBirth: form.dateOfBirth,
-          }),
-        }
-      );
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          username: form.username,
+          email: form.email,
+          password: form.password,
+          dateOfBirth: form.dateOfBirth,
+        }),
+      });
 
       const data = await response.json();
 
@@ -70,12 +69,6 @@ function RegisterPage() {
         return;
       }
 
-      /*
-       * Save authentication information returned
-       * by the backend.
-       *
-       * The actual account is stored in MongoDB.
-       */
       localStorage.setItem(
         "topline_token",
         data.token
@@ -100,31 +93,44 @@ function RegisterPage() {
 
   return (
     <div className="auth-page">
+
+      {/* =========================================
+          BRAND
+      ========================================= */}
       <div className="auth-brand">
         <Logo />
       </div>
 
+
+      {/* =========================================
+          REGISTER CARD
+      ========================================= */}
       <div className="auth-card register-card">
+
         <div className="auth-heading">
           <span>JOIN TOPLINE</span>
 
-          <h1>Create your account</h1>
-
           <p>
-            Join Topline and start building your social world.
+            Create your account to join topline.
           </p>
         </div>
 
+
+        {/* ERROR */}
         {error && (
           <div className="form-error">
             {error}
           </div>
         )}
 
+
+        {/* FORM */}
         <form
           onSubmit={handleSubmit}
           className="auth-form"
         >
+
+          {/* FULL NAME */}
           <label>
             Full name
 
@@ -138,6 +144,8 @@ function RegisterPage() {
             />
           </label>
 
+
+          {/* USERNAME */}
           <label>
             Username
 
@@ -151,6 +159,8 @@ function RegisterPage() {
             />
           </label>
 
+
+          {/* EMAIL */}
           <label>
             Email
 
@@ -164,7 +174,10 @@ function RegisterPage() {
             />
           </label>
 
+
+          {/* PASSWORDS */}
           <div className="form-row">
+
             <label>
               Password
 
@@ -178,6 +191,7 @@ function RegisterPage() {
               />
             </label>
 
+
             <label>
               Confirm password
 
@@ -190,8 +204,11 @@ function RegisterPage() {
                 required
               />
             </label>
+
           </div>
 
+
+          {/* DATE OF BIRTH */}
           <label>
             Date of birth
 
@@ -204,6 +221,8 @@ function RegisterPage() {
             />
           </label>
 
+
+          {/* SUBMIT */}
           <button
             type="submit"
             className="primary-button full"
@@ -213,17 +232,83 @@ function RegisterPage() {
               ? "Creating account..."
               : "Create account"}
 
-            {!loading && <ArrowRight size={18} />}
+            {!loading && (
+              <ArrowRight size={18} />
+            )}
           </button>
+
         </form>
 
+
+        {/* LOGIN LINK */}
         <p className="auth-switch">
           Already have an account?{" "}
+
           <Link to="/login">
             Log in
           </Link>
         </p>
+
       </div>
+
+
+      {/* =========================================
+          ANIMATED CHAT AREA
+      ========================================= */}
+      <div className="col-md-5 col-sm-5">
+
+        <div className="chat-animation">
+
+          <div className="message received">
+            👋 Hello!
+          </div>
+
+          <div className="message sent">
+            Hi! 😊
+          </div>
+
+          <div className="message received">
+            Ready for today's online chat?
+          </div>
+
+          <div className="message sent">
+            Absolutely! 🚀
+          </div>
+
+          <div className="message received">
+            Loading your feed...
+          </div>
+
+
+          {/* TYPING AREA */}
+          <div className="typing-container">
+
+            <div className="message sent typing-message">
+
+              <span className="typing-text">
+                {typingText}
+              </span>
+
+              <span className="cursor">
+                |
+              </span>
+
+            </div>
+
+
+            <button
+              type="button"
+              className="send-btn"
+            >
+              <i className="fa-solid fa-paper-plane"></i>
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }

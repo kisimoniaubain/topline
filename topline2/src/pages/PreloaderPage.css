@@ -3,6 +3,13 @@
    TOPLINE PRELOADER
 ========================================= */
 
+body.dark .preloader-page,
+body.dark .preloader-card,
+body.dark .preloader-overlay {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
 .preloader-page {
   position: relative;
   min-height: 100vh;
@@ -125,29 +132,26 @@
 
 /* TEXT */
 
+body.dark .preloader-text {
+  color: #f0e6c8 !important;
+  border-bottom: none !important;
+  text-decoration: none !important;
+}
+
 .preloader-text {
   color: rgb(22, 12, 12);
-
   letter-spacing: 4px;
-
   font-size: 13px;
-
   opacity: 0.8;
-
   font-weight: 500;
+  border-bottom: none;
+  text-decoration: none;
 }
 
 /* PROGRESS */
 
 .preloader-progress {
-  width: 280px;
-  height: 4px;
-
-  background: rgba(255, 255, 255, 0.15);
-
-  border-radius: 30px;
-
-  overflow: hidden;
+  display: none;
 }
 
 .preloader-progress-fill {

@@ -2,6 +2,20 @@
    PROFILE
 ========================================= */
 
+body.dark .profile-page,
+body.dark .profile-card,
+body.dark .profile-header,
+body.dark .profile-section {
+  background: #0a0a0a !important;
+  color: #f0e6c8 !important;
+}
+body.dark .profile-page input,
+body.dark .profile-page textarea {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  border-color: var(--border-color) !important;
+}
+
 .profile-page {
   flex: 1;
   min-width: 0;

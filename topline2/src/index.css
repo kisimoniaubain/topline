@@ -521,6 +521,39 @@ a {
   font-size: 12px;
 }
 
+body.dark {
+  --text: #f0e6c8;
+  --text-h: #ffffff;
+  --bg: #0a0a0a;
+  --surface: #151515;
+  --border-color: #2e303a;
+  --page-bg: #0a0a0a;
+  --background: #0a0a0a;
+  color: var(--text);
+  background: var(--bg);
+}
+body.dark h1, body.dark h2, body.dark h3, body.dark strong {
+  color: #f0e6c8;
+}
+body.dark p, body.dark span, body.dark button {
+  color: #f0e6c8;
+}
+body.dark .post-text, body.dark .post-meta, body.dark .comment p {
+  color: #f0e6c8;
+}
+
+body.dark .right-sidebar,
+body.dark .desktop-sidebar,
+body.dark .side-card {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark #root {
+  background: #0a0a0a !important;
+}
+
 /* APPLICATION */
 
 .app-shell {
@@ -707,6 +740,7 @@ a {
   color: var(--orange);
   font-size: 11px;
   font-weight: 700;
+  
 }
 
 .stories-row {
@@ -715,6 +749,7 @@ a {
   margin-top: 15px;
   overflow-x: auto;
   scrollbar-width: none;
+  
 }
 
 .story-card {
@@ -725,6 +760,7 @@ a {
   border-radius: 12px;
   background: transparent;
   color: white;
+
 }
 
 .story-image {
@@ -733,12 +769,14 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(
+  background-color: #010e05;
+  /* background: linear-gradient(
     145deg,
     #111,
     var(--orange)
-  );
+  ); */
   font-size: 30px;
+  text-align: center;
   font-weight: 800;
 }
 
@@ -747,6 +785,7 @@ a {
   bottom: 10px;
   left: 10px;
   font-size: 11px;
+  
 }
 
 .create-story-button {
@@ -757,7 +796,9 @@ a {
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: var(--orange);
+  background: white;
+  color: #000000;
+  /* background: var(--orange); */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -767,6 +808,7 @@ a {
 .composer-card {
   padding: 18px;
   margin-bottom: 16px;
+  
 }
 
 .composer-top {
