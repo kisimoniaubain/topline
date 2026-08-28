@@ -55,6 +55,11 @@ const saveStoredProfile = (profileData) => {
 };
 
 function ProfilePage() {
+  useEffect(() => {
+    fetch("/api/user/me", { headers: { Authorization: "Bearer " + localStorage.getItem("topline_token") } })
+      .then(r => r.json()).then(d => { if (d.user) setUser(d.user); });
+  }, []);
+
   const [user, setUser] = useState(() => {
     const saved = getStoredProfile();
     return (

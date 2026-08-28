@@ -101,7 +101,6 @@ function Navbar({ onMenuClick }) {
           aria-label="Menu"
         >
           <Menu size={21} />
-          <span className="notification-dot">3</span>
         </Link>
 
         <Link
@@ -125,7 +124,7 @@ function Navbar({ onMenuClick }) {
             textDecoration: "none",
           }}
         >
-          {user?.profileImage || user?.image ? (
+          {(user?.profileImage || user?.image) ? (
             <img
               src={user?.profileImage || user?.image}
               alt="User profile"
@@ -137,7 +136,7 @@ function Navbar({ onMenuClick }) {
               }}
             />
           ) : (
-            getInitial()
+            <span style={{ fontWeight: 700, fontSize: 16 }}>{getInitial()}</span>
           )}
         </Link>
       </div>

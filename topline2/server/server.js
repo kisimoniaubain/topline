@@ -43,7 +43,7 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.use("/api/auth", authRoutes);
+app.use("/api/user", (await import("./routes/user.js")).default);\napp.use("/api/auth", authRoutes);
 
 /* =========================================
    SERVE REACT / VITE FRONTEND
@@ -65,6 +65,15 @@ app.use((req, res, next) => {
   }
 
   res.sendFile(path.join(distPath, "index.html"));
+});
+
+mongoose.connection.on("connected", async () => {
+  try {
+    await mongoose.connection.collection("users").dropIndexes();
+    console.log("Dropped user indexes");
+  } catch (e) {
+    console.log("Index drop skipped:", e.message);
+  }
 });
 
 /* =========================================

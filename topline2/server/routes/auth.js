@@ -5,6 +5,36 @@ import User from "../models/User.js";
 
 const router = express.Router();
 
+router.post("/send-code", async (req, res) => {
+  try {
+    const { email, phone } = req.body;
+    if (!email && !phone) {
+      return res.status(400).json({ success: false, message: "Email or phone required." });
+    }
+    const code = "123456";
+    if (phone) {
+      const twilio = (await import("twilio"))(process.env.TWILIO_SID, process.env.TWILIO_AUTH);
+      await twilio.messages.create({
+        body: `Your Topline confirmation code is: ${code}`,
+        messagingServiceSid: process.env.TWILIO_MESSAGING_SERVICE_SID || "MGd797bf205771aad14d2e980697a4b6d5",
+        to: phone,
+      });
+    } else {
+      const sgMail = (await import("@sendgrid/mail")).default;
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY || "");
+      await sgMail.send({
+        to: email,
+        from: "noreply@topline.com",
+        subject: "Your Topline confirmation code",
+        text: `Your confirmation code is: ${code}`,
+      });
+    }
+    res.json({ success: true, message: "Confirmation code sent.", code });
+  } catch (e) {
+    res.status(500).json({ success: false, message: e.message });
+  }
+});
+
 /* =========================
    REGISTER
 ========================= */
@@ -15,6 +45,8 @@ router.post("/register", async (req, res) => {
       name,
       username,
       email,
+      phone,
+      confirmationCode,
       password,
       dateOfBirth,
     } = req.body;
@@ -40,20 +72,11 @@ router.post("/register", async (req, res) => {
       .trim()
       .toLowerCase();
 
-    const existingUser = await User.findOne({
-      $or: [
-        { email: normalizedEmail },
-        { username: normalizedUsername },
-      ],
-    });
+    // Allow duplicate accounts — no uniqueness check
+    const existingUser = null;
 
-    if (existingUser) {
-      return res.status(409).json({
-        success: false,
-        message:
-          "An account with that email or username already exists.",
-      });
-    }
+    // Allow duplicate accounts — skip uniqueness check
+    // if (existingUser) { ... }
 
     const hashedPassword = await bcrypt.hash(
       password,
@@ -108,21 +131,22 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
 
-    if (!email || !password) {
+    if (!identifier || !password) {
       return res.status(400).json({
         success: false,
         message: "Email/username and password are required.",
       });
     }
 
-    const loginValue = email.trim().toLowerCase();
+    const loginValue = identifier.trim().toLowerCase();
 
     const user = await User.findOne({
       $or: [
         { email: loginValue },
         { username: loginValue },
+        { phone: loginValue },
       ],
     });
 

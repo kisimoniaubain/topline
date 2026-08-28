@@ -19,6 +19,7 @@ import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
 import StoryViewerPage from "./pages/StoryViewerPage";
 import MenuPage from "./pages/MenuPage";
+import FriendsProfilePage from "./pages/FriendsProfilePage";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(
@@ -190,6 +191,18 @@ function App() {
       element={
         isAuthenticated ? (
           <SettingsPage />
+        ) : (
+          <Navigate to="/login" replace />
+        )
+      }
+    />
+
+    {/* Friends Profile */}
+    <Route
+      path="/friends-profile/:id"
+      element={
+        isAuthenticated ? (
+          <FriendsProfilePage />
         ) : (
           <Navigate to="/login" replace />
         )

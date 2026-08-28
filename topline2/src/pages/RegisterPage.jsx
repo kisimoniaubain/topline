@@ -14,11 +14,13 @@ function RegisterPage() {
     password: "",
     confirmPassword: "",
     dateOfBirth: "",
+    confirmationCode: "",
   });
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [step, setStep] = useState(1);
   const [typingText, setTypingText] = useState("");
 
   const handleChange = (event) => {
@@ -33,14 +35,38 @@ function RegisterPage() {
 
     setError("");
 
-    if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match.");
+    if (step === 1) {
+      if (form.password !== form.confirmPassword) {
+        setError("Passwords do not match.");
+        return;
+      }
+      if (form.password.length < 6) {
+        setError("Password must contain at least 6 characters.");
+        return;
+      }
+      // Send confirmation code
+      try {
+        const res = await fetch("/api/auth/send-code", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: form.email, phone: form.phone }),
+        });
+        const data = await res.json();
+        console.log("Send-code response:", data);
+      } catch (e) {
+        console.error("Send-code error:", e);
+      }
+      setStep(2);
+      setError("Confirmation code sent to your email/phone.");
       return;
     }
 
-    if (form.password.length < 6) {
-      setError("Password must contain at least 6 characters.");
-      return;
+    if (step === 2) {
+      if (!form.confirmationCode || form.confirmationCode.length !== 6) {
+        setError("Please enter the 6-digit confirmation code.");
+        return;
+      }
+      // Proceed with registration
     }
 
     try {
@@ -125,10 +151,11 @@ function RegisterPage() {
 
 
         {/* FORM */}
-        <form
-          onSubmit={handleSubmit}
-          className="auth-form"
-        >
+        
+          <form
+            onSubmit={handleSubmit}
+            className="auth-form"
+          >
 
           {/* FULL NAME */}
           <label>
@@ -160,20 +187,19 @@ function RegisterPage() {
           </label>
 
 
-          {/* EMAIL */}
+          {/* EMAIL OR PHONE */}
           <label>
-            Email
+            Email or Phone
 
             <input
-              type="email"
+              type="text"
               name="email"
               value={form.email}
               onChange={handleChange}
-              placeholder="you@example.com"
+              placeholder="you@example.com or +1234567890"
               required
             />
           </label>
-
 
           {/* PASSWORDS */}
           <div className="form-row">
@@ -238,6 +264,8 @@ function RegisterPage() {
           </button>
 
         </form>
+          
+        
 
 
         {/* LOGIN LINK */}
@@ -314,3 +342,4 @@ function RegisterPage() {
 }
 
 export default RegisterPage;
+

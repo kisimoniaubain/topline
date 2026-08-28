@@ -19,7 +19,7 @@ function LoginPage({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const [form, setForm] = useState({
-    email: "",
+    identifier: "",
     password: "",
   });
 
@@ -101,7 +101,7 @@ function LoginPage({ onLogin }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: form.email,
+          identifier: form.identifier,
           password: form.password,
         }),
       });
@@ -215,8 +215,9 @@ function LoginPage({ onLogin }) {
 
   return (
     <div className="auth-page">
-    <div className="pointer-events-none absolute -bottom-10 -right-10 h-72 w-72 rounded-full border-[55px] border-vibrant-orange/10"></div>
-    <div className="pointer-events-none absolute -top-40 left-[22%] h-[480px] w-[480px] rounded-full border-[80px] border-primary/10"></div>
+      
+    <div className="pointer-events-none absolute -bottom-10 -right-10 h-72 w-72 rounded-full border-[55px] border-vibrant-orange/10"></div>    
+    <div className="pointer-events-none absolute -top-10 -left-10 h-72 w-72 rounded-full border-[55px] border-vibrant-orange/10"></div>
 
       <div className="auth-brand">
         <Logo />
@@ -247,8 +248,8 @@ function LoginPage({ onLogin }) {
 
             <input
               type="text"
-              name="email"
-              value={form.email}
+              name="identifier"
+              value={form.identifier}
               onChange={handleChange}
               placeholder="Enter your email or username"
               required
@@ -313,31 +314,31 @@ function LoginPage({ onLogin }) {
       </div>
 
    {/* animated massages */}
-      <div class="col-md-5 col-sm-5">
+      <div className="col-md-5 col-sm-5">
 
 
-          <div class="chat-animation">
+          <div className="chat-animation">
 
-           <div class="message received">
+           <div className="message received">
              👋 Hello!
            </div>
 
-           <div class="message sent">
+           <div className="message sent">
               Hi! 😊
            </div>
 
-           <div class="message received">
+           <div className="message received">
               Ready for today's online chat?
            </div>
 
-           <div class="message sent">
+           <div className="message sent">
               Absolutely! 🚀
            </div>
 
-           <div class="message received">
+           <div className="message received">
               Loading your feed...
            </div>
-          <div class="typing-container">
+          <div className="typing-container">
 
           <div className="message sent typing-message">
           <span id="typing-text" className="typing-text">
@@ -346,8 +347,8 @@ function LoginPage({ onLogin }) {
           <span className="cursor">|</span>
         </div>
 
-        <button class="send-btn">
-        <i class="fa-solid fa-paper-plane"></i>
+        <button className="send-btn">
+        <i className="fa-solid fa-paper-plane"></i>
         </button>
 
          </div>

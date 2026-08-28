@@ -103,9 +103,9 @@ const defaultStories = [
 ];
 
 const people = [
-  "Michael",
-  "Grace",
-  "Daniel",
+  { name: "Michael", username: "michael", id: 1 },
+  { name: "Grace", username: "grace", id: 2 },
+  { name: "Daniel", username: "daniel", id: 3 },
 ];
 
 const onlineFriends = [
@@ -113,6 +113,19 @@ const onlineFriends = [
   "David",
   "Sarah",
 ];
+
+const formatTime = (ts) => {
+  if (!ts) return "Just now";
+  const diff = Date.now() - ts;
+  const mins = Math.floor(diff / 60000);
+  const hrs = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+  if (days >= 7) return "1 week ago";
+  if (days > 0) return `${days}d ago`;
+  if (hrs > 0) return `${hrs}h ago`;
+  if (mins > 0) return `${mins}m ago`;
+  return "Just now";
+};
 
 function HomePage() {
   const navigate = useNavigate();
@@ -195,11 +208,18 @@ function HomePage() {
   }, [posts]);
 
   useEffect(() => {
-    localStorage.setItem(
-      "topline_stories",
-      JSON.stringify(stories)
-    );
+    localStorage.setItem("topline_stories", JSON.stringify(stories));
   }, [stories]);
+
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem("topline_stories") || "[]");
+    const now = Date.now();
+    const filtered = saved.filter((s) => (now - (s.createdAtTs || now)) < 86400000);
+    if (filtered.length !== saved.length) {
+      setStories(filtered);
+      localStorage.setItem("topline_stories", JSON.stringify(filtered));
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(
@@ -230,40 +250,16 @@ function HomePage() {
       video: selectedVideo,
       feeling: selectedFeeling,
       location: location,
-      createdAt: "Just now",
+      createdAtTs: Date.now(),
+      createdAt: (() => {
+        const diff = Date.now() - Date.now(); // placeholder; use actual timestamp
+        return "Just now";
+      })(),
       likes: 0,
       comments: [],
       shares: 0,
       liked: false,
     };
-    // const newPost = {
-    //   id: Date.now(),
-
-    //   user: {
-    //     name: currentUserName,
-    //     username: user.username || "user",
-    //   },
-
-    //   text: postText.trim(),
-
-    //   image: selectedImage,
-
-    //   video: selectedVideo,
-
-    //   feeling: selectedFeeling,
-
-    //   location,
-
-    //   createdAt: "Just now",
-
-    //   likes: 0,
-
-    //   comments: [],
-
-    //   shares: 0,
-
-    //   liked: false,
-    // };
 
     setPosts((previousPosts) => [
       newPost,
@@ -458,7 +454,7 @@ function HomePage() {
       const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, { method: "POST", body: formData });
       const data = await res.json();
       const imageUrl = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80";
-      const newStory = { id: Date.now(), name: currentUserName, image: imageUrl, text: caption.trim(), viewed: true, own: true };
+      const newStory = { id: Date.now(), name: currentUserName, image: imageUrl, text: caption.trim(), viewed: true, own: true, createdAtTs: Date.now() };
       setStories((prev) => [newStory, ...prev]);
       setActiveStory(newStory);
     } catch {
@@ -572,7 +568,7 @@ function HomePage() {
     <Plus size={18} />
   </div>
 
-  <strong>Your story</strong>
+  <strong>Create Story</strong>
 </button>
               {/* STORIES */}
 
@@ -613,6 +609,7 @@ function HomePage() {
 
           <section className="composer-card">
             <div className="composer-top">
+              
 <div className="user-avatar">
 <Link
   to={`/profile/${currentUser?.id || currentUser?._id}`}
@@ -862,7 +859,33 @@ function HomePage() {
               <div className="post-header">
                 <div className="post-user">
                   <div className="user-avatar">
-                    {post.user.name.charAt(0)}
+                    <Link
+                      to={`/profile/${currentUser?.id || currentUser?._id}`}
+                      className="user-avatar"
+                      style={{
+                        overflow: "hidden",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        textDecoration: "none",
+                      }}
+                    >
+                      {(currentUserProfileImage) ? (
+                        <img
+                          src={currentUserProfileImage}
+                          alt={currentUserName}
+                          className="user-avatar-image"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: "50%",
+                          }}
+                        />
+                      ) : (
+                        <span style={{ fontWeight: 700, fontSize: 16 }}>{currentUserName?.charAt(0)?.toUpperCase() || "U"}</span>
+                      )}
+                    </Link>
                   </div>
 
                   <div>
@@ -871,8 +894,7 @@ function HomePage() {
                     </strong>
 
                     <span>
-                      @{post.user.username} ·{" "}
-                      {post.createdAt}
+                      {post.createdAtTs ? formatTime(post.createdAtTs) : post.createdAt}
                     </span>
                   </div>
                 </div>
@@ -1126,16 +1148,16 @@ function HomePage() {
                 return (
                   <div
                     className="suggestion"
-                    key={person}
+                    key={person.id || person}
                   >
-                    <div className="user-avatar">
-                      {person.charAt(0)}
-                    </div>
+                    <Link to={`/friends-profile/${person.id || person}`} className="user-avatar">
+                      <div className="user-avatar">
+                        {typeof person === "string" ? person.charAt(0) : person.name?.charAt(0)}
+                      </div>
+                    </Link>
 
                     <div className="suggestion-info">
-                      <strong>
-                        {person}
-                      </strong>
+                      <Link to={`/friends-profile/${person.id || person}`}><strong>{typeof person === "string" ? person : person.name}</strong></Link>
 
                       <span>
                         8 mutual friends

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Search,
   UserPlus,
@@ -220,21 +221,18 @@ function FriendsPage() {
                     key={person.id}
                   >
                     <div className="friend-cover">
-                      <div className="friend-avatar">
-                        {person.name.charAt(0)}
-
-                        {person.online && (
-                          <span className="friend-online" />
-                        )}
-                      </div>
+                      <Link to={`/friends-profile/${person.id}`} className="friend-avatar-link">
+                        <div className="friend-avatar">
+                          {person.name.charAt(0)}
+                          {person.online && <span className="friend-online" />}
+                        </div>
+                      </Link>
                     </div>
 
                     <div className="friend-info">
-                      <h3>{person.name}</h3>
+                      <Link to={`/friends-profile/${person.id}`}><h3>{person.name}</h3></Link>
 
-                      <p>
-                        @{person.username}
-                      </p>
+                      <Link to={`/friends-profile/${person.id}`}><p>@{person.username}</p></Link>
 
                       <span>
                         {person.mutual} mutual{" "}
