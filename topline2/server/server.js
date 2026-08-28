@@ -43,8 +43,8 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.use("/api/user", (await import("./routes/user.js")).default);\napp.use("/api/auth", authRoutes);
-
+app.use("/api/user", (await import("./routes/user.js")).default);
+app.use("/api/auth", authRoutes);
 /* =========================================
    SERVE REACT / VITE FRONTEND
 ========================================= */
